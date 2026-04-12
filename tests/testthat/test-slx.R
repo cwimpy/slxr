@@ -32,6 +32,35 @@ test_that("slx_plot_effects() returns a ggplot", {
   expect_s3_class(p, "ggplot")
 })
 
+test_that("defense_burden dataset loads and fits a multi-W SLX", {
+  data(defense_burden)
+  W_c <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
+                     row_standardize = FALSE)
+  W_a <- slx_weights(style = "custom", matrix = defense_burden$W_alliance,
+                     row_standardize = FALSE)
+
+  fit <- slx(
+    ch_milex ~ milex_tm1 + log_pop_tm1 + civilwar_tm1 + total_wars_tm1,
+    data = defense_burden$data,
+    spatial = list(
+      civilwar_tm1   = W_c,
+      total_wars_tm1 = list(contig = W_c, alliance = W_a)
+    )
+  )
+
+  expect_s3_class(fit, "slx")
+  expect_equal(fit$n, nrow(defense_burden$data))
+  eff <- slx_effects(fit)
+  expect_true(any(eff$variable == "total_wars_tm1" & eff$w_name == "alliance"))
+})
+
+test_that("slx_weights(style = 'custom') works without supplying x", {
+  m <- matrix(c(0,1,0, 1,0,1, 0,1,0), nrow = 3)
+  W <- slx_weights(style = "custom", matrix = m)
+  expect_s3_class(W, "slx_W")
+  expect_equal(W$n, 3L)
+})
+
 test_that("multiple W matrices on a single variable produce separate effects", {
   skip_if_not_installed("sf")
   skip_if_not_installed("spdep")

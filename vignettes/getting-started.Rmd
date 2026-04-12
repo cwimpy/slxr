@@ -8,10 +8,10 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-## Why SLX
+## The Spatial-X model
 
 The Spatial-X (SLX) model has the form
 
@@ -22,88 +22,138 @@ $$
 where `W` is a spatial weights matrix and `WX` adds spatially-lagged
 versions of selected regressors. Wimpy, Whitten, and Williams (2021)
 argue that the SLX specification more faithfully reflects typical
-political science theories than the more common SAR model, and is much
-easier to estimate and interpret: it is plain OLS on an augmented design
-matrix.
+political science theories than the more common SAR model, and is
+much easier to estimate and interpret: it is plain OLS on an augmented
+design matrix.
 
 `slxr` exists because the mechanics of building `W`, multiplying it by
 the right columns of `X`, and reporting direct/indirect/total effects
 cleanly is more friction than applied researchers should have to
 endure.
 
-## Installation
+## The example dataset
 
-```{r}
-# remotes::install_github("cwimpy/slxr")
+The package ships with `defense_burden`, a 1995 cross-section of 179
+countries drawn from the replication archive of Wimpy, Whitten, and
+Williams (2021). The data include change in military expenditures
+(the outcome), lagged covariates, and three row-standardized spatial
+weights matrices encoding different channels of international
+connectivity.
+
+```{r load}
 library(slxr)
+data(defense_burden)
+
+names(defense_burden)
+dim(defense_burden$data)
+dim(defense_burden$W_contig)
 ```
 
-## A minimal example
+`defense_burden$data` is a tibble with country-level observations.
+`defense_burden$W_contig`, `$W_alliance`, and `$W_defense` are sparse
+weights matrices connecting those countries through geographic
+contiguity, alliance ties, and mutual defense pacts, respectively.
 
-We use the `nc` shapefile shipped with `sf`.
+## Fitting an SLX model with a single W
 
-```{r}
-library(sf)
-nc <- st_read(system.file("shape/nc.shp", package = "sf"))
+The simplest case: one weights matrix, one lagged variable. We lag
+only `total_wars_tm1` through contiguity, so the indirect effect
+captures the spillover from interstate wars in neighboring countries.
 
-W <- slx_weights(nc, style = "contiguity")
-W
-```
+```{r single-w}
+W_contig <- slx_weights(style = "custom",
+                        matrix = defense_burden$W_contig,
+                        row_standardize = FALSE)
 
-Fit an SLX model that spatially lags `BIR74` only:
-
-```{r}
-fit <- slx(SID74 ~ BIR74 + NWBIR74,
-           data = nc,
-           W    = W,
-           lag  = "BIR74")
+fit <- slx(ch_milex ~ milex_tm1 + log_pop_tm1 + civilwar_tm1 +
+                      total_wars_tm1 + alliance_us +
+                      ch_milex_us + ch_milex_ussr,
+           data = defense_burden$data,
+           W = W_contig,
+           lag = "total_wars_tm1")
 
 summary(fit)
 ```
 
-The spatial-lag columns are reported alongside the direct regressors.
-To extract clean direct, indirect, and total effects:
+The `W.total_wars_tm1` row is the spatial spillover. To get a clean
+direct/indirect/total decomposition:
 
-```{r}
+```{r single-w-effects}
 slx_effects(fit)
 ```
+
+For SLX these effects are a simple function of OLS coefficients and
+their variance-covariance matrix - no matrix inversion, no simulation.
 
 ## Variable-specific weights matrices
 
 The defining feature of Wimpy, Whitten, and Williams (2021) is that
-different covariates can spill over through different `W` matrices. For
-example, civil war might spill through contiguity while defense-pact
-effects spill through an alliance network:
+different covariates can spill over through different `W` matrices.
+Civil wars spread through geography; alliance ties produce joint
+responses to interstate conflict; defense-pact partners coordinate
+military spending. All three mechanisms can sit in a single model.
 
-```{r}
-W_contig <- slx_weights(countries, style = "contiguity")
-W_pact   <- slx_weights(countries, style = "custom",
-                         matrix = pact_adjacency)
+```{r multi-w}
+W_alliance <- slx_weights(style = "custom",
+                          matrix = defense_burden$W_alliance,
+                          row_standardize = FALSE)
+W_defense  <- slx_weights(style = "custom",
+                          matrix = defense_burden$W_defense,
+                          row_standardize = FALSE)
 
-fit <- slx(defense ~ civil_war + interstate_war + defense_lag,
-           data = panel,
-           spatial = list(
-             civil_war      = W_contig,
-             interstate_war = W_contig,
-             defense_lag    = list(contig = W_contig, pact = W_pact)
-           ))
-slx_effects(fit)
+fit_multi <- slx(
+  ch_milex ~ milex_tm1 + log_pop_tm1 + civilwar_tm1 +
+             total_wars_tm1 + alliance_us +
+             ch_milex_us + ch_milex_ussr,
+  data = defense_burden$data,
+  spatial = list(
+    civilwar_tm1   = W_contig,
+    total_wars_tm1 = list(contig = W_contig, alliance = W_alliance),
+    milex_tm1      = list(contig = W_contig, defense  = W_defense)
+  )
+)
+
+slx_effects(fit_multi)
 ```
 
-## Comparison with `lm()` output
+Here `total_wars_tm1` and `milex_tm1` each produce two indirect
+effects - one through each spatial channel - so the decomposition
+separates spillovers from geographically-contiguous neighbors from
+those transmitted through alliances or defense pacts.
 
-Because SLX is OLS on an augmented design matrix, `tidy()` and
-`glance()` work as expected:
+## Visualization
 
-```{r}
-broom::tidy(fit)
-broom::glance(fit)
-
-modelsummary::modelsummary(list(OLS = ols_fit, SLX = fit))
+```{r plot, fig.width = 7, fig.height = 4}
+library(ggplot2)
+slx_plot_effects(fit_multi, types = c("indirect", "total"))
 ```
+
+The plot facets automatically by weights matrix name when a variable
+is lagged through multiple `W` channels, so the per-channel spillover
+patterns are visible side-by-side.
+
+## broom and modelsummary integration
+
+```{r broom, eval = FALSE}
+tidy(fit_multi)
+glance(fit_multi)
+
+modelsummary::modelsummary(
+  list("Contiguity only" = fit, "Multi-W" = fit_multi),
+  statistic = "conf.int"
+)
+```
+
+## Caveats
+
+This vignette uses a single cross-section from 1995 because the
+current release of `slxr` does not yet support block-diagonal panel
+`W` matrices. A full-panel replication of Wimpy, Whitten, and
+Williams (2021) Table 3, Model 3 is planned for v0.2 alongside
+TSLS support.
 
 ## References
 
-Wimpy, C., Whitten, G. D., & Williams, L. K. (2021). X Marks the Spot:
-Unlocking the Treasure of Spatial-X Models. *Journal of Politics*,
-83(2), 722–739.
+Wimpy, C., Whitten, G. D., & Williams, L. K. (2021). X Marks the
+Spot: Unlocking the Treasure of Spatial-X Models. *Journal of
+Politics*, 83(2), 722-739.

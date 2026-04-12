@@ -5,7 +5,7 @@
 \title{Construct a spatial weights matrix}
 \usage{
 slx_weights(
-  x,
+  x = NULL,
   style = c("contiguity", "rook", "knn", "distance", "custom"),
   k = 5,
   threshold = NULL,

@@ -35,20 +35,28 @@ remotes::install_github("cwimpy/slxr")
 
 ```r
 library(slxr)
-library(sf)
+data(defense_burden)   # 1995 cross-section from Wimpy et al. (2021)
 
-# Build a weights matrix from an sf object
-W <- slx_weights(counties, style = "contiguity")
+W_contig   <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
+                          row_standardize = FALSE)
+W_alliance <- slx_weights(style = "custom", matrix = defense_burden$W_alliance,
+                          row_standardize = FALSE)
+W_defense  <- slx_weights(style = "custom", matrix = defense_burden$W_defense,
+                          row_standardize = FALSE)
 
-# Fit an SLX model — spatially lag `income` only
-fit <- slx(turnout ~ income + college + age,
-           data = counties,
-           W = W,
-           lag = "income")
+fit <- slx(
+  ch_milex ~ milex_tm1 + log_pop_tm1 + civilwar_tm1 + total_wars_tm1 +
+             alliance_us + ch_milex_us + ch_milex_ussr,
+  data = defense_burden$data,
+  spatial = list(
+    civilwar_tm1   = W_contig,
+    total_wars_tm1 = list(contig = W_contig, alliance = W_alliance),
+    milex_tm1      = list(contig = W_contig, defense  = W_defense)
+  )
+)
 
-summary(fit)
-slx_effects(fit)        # direct / indirect / total
-slx_plot_effects(fit)   # publication-ready coefplot
+slx_effects(fit)
+slx_plot_effects(fit, types = c("indirect", "total"))
 ```
 
 ![SLX effects plot](man/figures/README-effects.png)

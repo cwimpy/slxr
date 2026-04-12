@@ -28,7 +28,7 @@
 #' W  <- slx_weights(nc, style = "contiguity")
 #' }
 #' @export
-slx_weights <- function(x,
+slx_weights <- function(x = NULL,
                         style = c("contiguity", "rook", "knn",
                                   "distance", "custom"),
                         k = 5,
@@ -45,6 +45,10 @@ slx_weights <- function(x,
     }
     W <- Matrix::Matrix(as.matrix(matrix), sparse = TRUE)
   } else {
+    if (is.null(x)) {
+      stop("`x` (an sf object or coordinates) is required for style = '",
+           style, "'.", call. = FALSE)
+    }
     if (!requireNamespace("spdep", quietly = TRUE)) {
       stop("Package 'spdep' is required for style = '", style, "'.",
            call. = FALSE)
