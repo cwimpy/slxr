@@ -1,0 +1,44 @@
+Package: slxr
+Type: Package
+Title: Spatial-X (SLX) Models for Applied Researchers
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Cameron", "Wimpy", email = "cwimpy@astate.edu",
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0000-0000-0000"))
+    )
+Description: Tools for estimating, interpreting, and visualizing Spatial-X
+    (SLX) regression models. Provides a formula-based interface with
+    first-class support for variable-specific weights matrices, higher-order
+    spatial lags, temporally-lagged spatial variables (TSLS), and tidy
+    effects decomposition (direct, indirect, total). Designed to lower the
+    barrier to SLX modeling for applied researchers who already work with
+    'sf' and 'lm'-style formulas. Methods follow Wimpy, Whitten, and
+    Williams (2021) <doi:10.1086/710089>.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Depends:
+    R (>= 4.1.0)
+Imports:
+    spdep,
+    sf,
+    Matrix,
+    dplyr,
+    tibble,
+    rlang,
+    stats,
+    generics
+Suggests:
+    ggplot2,
+    modelsummary,
+    broom,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+URL: https://github.com/cwimpy/slxr
+BugReports: https://github.com/cwimpy/slxr/issues

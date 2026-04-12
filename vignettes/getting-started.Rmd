@@ -1,0 +1,109 @@
+---
+title: "Getting started with slxr"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with slxr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+## Why SLX
+
+The Spatial-X (SLX) model has the form
+
+$$
+y = X\beta + WX\theta + \varepsilon,
+$$
+
+where `W` is a spatial weights matrix and `WX` adds spatially-lagged
+versions of selected regressors. Wimpy, Whitten, and Williams (2021)
+argue that the SLX specification more faithfully reflects typical
+political science theories than the more common SAR model, and is much
+easier to estimate and interpret: it is plain OLS on an augmented design
+matrix.
+
+`slxr` exists because the mechanics of building `W`, multiplying it by
+the right columns of `X`, and reporting direct/indirect/total effects
+cleanly is more friction than applied researchers should have to
+endure.
+
+## Installation
+
+```{r}
+# remotes::install_github("cwimpy/slxr")
+library(slxr)
+```
+
+## A minimal example
+
+We use the `nc` shapefile shipped with `sf`.
+
+```{r}
+library(sf)
+nc <- st_read(system.file("shape/nc.shp", package = "sf"))
+
+W <- slx_weights(nc, style = "contiguity")
+W
+```
+
+Fit an SLX model that spatially lags `BIR74` only:
+
+```{r}
+fit <- slx(SID74 ~ BIR74 + NWBIR74,
+           data = nc,
+           W    = W,
+           lag  = "BIR74")
+
+summary(fit)
+```
+
+The spatial-lag columns are reported alongside the direct regressors.
+To extract clean direct, indirect, and total effects:
+
+```{r}
+slx_effects(fit)
+```
+
+## Variable-specific weights matrices
+
+The defining feature of Wimpy, Whitten, and Williams (2021) is that
+different covariates can spill over through different `W` matrices. For
+example, civil war might spill through contiguity while defense-pact
+effects spill through an alliance network:
+
+```{r}
+W_contig <- slx_weights(countries, style = "contiguity")
+W_pact   <- slx_weights(countries, style = "custom",
+                         matrix = pact_adjacency)
+
+fit <- slx(defense ~ civil_war + interstate_war + defense_lag,
+           data = panel,
+           spatial = list(
+             civil_war      = W_contig,
+             interstate_war = W_contig,
+             defense_lag    = list(contig = W_contig, pact = W_pact)
+           ))
+slx_effects(fit)
+```
+
+## Comparison with `lm()` output
+
+Because SLX is OLS on an augmented design matrix, `tidy()` and
+`glance()` work as expected:
+
+```{r}
+broom::tidy(fit)
+broom::glance(fit)
+
+modelsummary::modelsummary(list(OLS = ols_fit, SLX = fit))
+```
+
+## References
+
+Wimpy, C., Whitten, G. D., & Williams, L. K. (2021). X Marks the Spot:
+Unlocking the Treasure of Spatial-X Models. *Journal of Politics*,
+83(2), 722–739.
