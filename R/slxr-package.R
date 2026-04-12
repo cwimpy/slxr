@@ -8,5 +8,10 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom generics tidy glance
+#' @export
+generics::tidy
+#' @export
+generics::glance
 ## usethis namespace: end
 NULL

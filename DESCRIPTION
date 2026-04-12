@@ -5,7 +5,7 @@ Version: 0.0.0.9000
 Authors@R: c(
     person("Cameron", "Wimpy", email = "cwimpy@astate.edu",
            role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0000-0000-0000"))
+           comment = c(ORCID = "0000-0002-2049-5229"))
     )
 Description: Tools for estimating, interpreting, and visualizing Spatial-X
     (SLX) regression models. Provides a formula-based interface with
@@ -19,7 +19,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Depends:
     R (>= 4.1.0)
 Imports:

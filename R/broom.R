@@ -18,7 +18,8 @@
 NULL
 
 #' @rdname slx-tidiers
-#' @export
+#' @importFrom generics tidy
+#' @exportS3Method generics::tidy
 tidy.slx <- function(x, conf.int = FALSE, conf.level = 0.95, ...) {
   s <- summary(x$fit)$coefficients
   out <- data.frame(
@@ -39,7 +40,8 @@ tidy.slx <- function(x, conf.int = FALSE, conf.level = 0.95, ...) {
 }
 
 #' @rdname slx-tidiers
-#' @export
+#' @importFrom generics glance
+#' @exportS3Method generics::glance
 glance.slx <- function(x, ...) {
   g <- summary(x$fit)
   tibble::tibble(
