@@ -91,6 +91,7 @@ slx_effects <- function(object, by_order = FALSE, conf.level = 0.95) {
 
   out <- rbind(direct_tbl, indirect_tbl, total_tbl)
   rownames(out) <- NULL
+  if (!by_order) out$order <- NULL
   tibble::as_tibble(out)
 }
 

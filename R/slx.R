@@ -132,7 +132,7 @@ slx <- function(formula,
         colnm <- if (ord == 1L) sprintf("W.%s", v)
                  else sprintf("W%d.%s", ord, v)
         if (!is.null(entry$name)) {
-          colnm <- sprintf("%s[%s]", colnm, entry$name)
+          colnm <- sprintf("%s__%s", colnm, entry$name)
         }
         mf[[colnm]] <- lagged
         lag_terms <- rbind(lag_terms, data.frame(
@@ -144,8 +144,11 @@ slx <- function(formula,
     }
   }
 
-  rhs <- paste(c(attr(stats::terms(formula), "term.labels"),
-                 lag_terms$colname), collapse = " + ")
+  rhs <- paste(
+    c(attr(stats::terms(formula), "term.labels"),
+      lag_terms$colname),
+    collapse = " + "
+  )
   full_formula <- stats::as.formula(
     paste(deparse(formula[[2L]]), "~", rhs)
   )

@@ -32,6 +32,31 @@ test_that("slx_plot_effects() returns a ggplot", {
   expect_s3_class(p, "ggplot")
 })
 
+test_that("multiple W matrices on a single variable produce separate effects", {
+  skip_if_not_installed("sf")
+  skip_if_not_installed("spdep")
+
+  nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"),
+                    quiet = TRUE)
+  W_contig <- slx_weights(nc, style = "contiguity")
+  W_knn    <- slx_weights(nc, style = "knn", k = 4)
+
+  fit <- slx(SID74 ~ BIR74 + NWBIR74,
+             data = nc,
+             spatial = list(
+               BIR74   = list(contig = W_contig, knn = W_knn),
+               NWBIR74 = W_contig
+             ))
+
+  expect_true("W.BIR74__contig" %in% names(coef(fit)))
+  expect_true("W.BIR74__knn" %in% names(coef(fit)))
+
+  eff <- slx_effects(fit)
+  bir_indirect <- eff[eff$variable == "BIR74" & eff$type == "indirect", ]
+  expect_equal(nrow(bir_indirect), 2L)
+  expect_setequal(bir_indirect$w_name, c("contig", "knn"))
+})
+
 test_that("slx_weights() returns an slx_W object", {
   skip_if_not_installed("sf")
 

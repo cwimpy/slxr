@@ -58,9 +58,10 @@ slx_plot_effects <- function(fit,
        ) +
     ggplot2::geom_vline(xintercept = 0, linetype = "dashed",
                         colour = "grey60") +
-    ggplot2::geom_errorbarh(
+    ggplot2::geom_errorbar(
       ggplot2::aes(xmin = .data$conf.low, xmax = .data$conf.high),
-      height = 0.2,
+      width = 0.2,
+      orientation = "y",
       position = ggplot2::position_dodge(width = 0.5)
     ) +
     ggplot2::geom_point(
