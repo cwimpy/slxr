@@ -4,12 +4,20 @@
 \alias{slx_plot_decay}
 \title{Plot how indirect effects decay across orders of W}
 \usage{
-slx_plot_decay(fit)
+slx_plot_decay(fit, variables = NULL, conf.level = 0.95)
 }
 \arguments{
 \item{fit}{An \code{slx} model fit with higher-order \code{W} terms.}
+
+\item{variables}{Optional character vector restricting to specific
+lagged variables. Default plots all.}
+
+\item{conf.level}{Confidence level.}
+}
+\value{
+A \code{ggplot} object.
 }
 \description{
-Stub — v0.2.
+For SLX models fit with higher-order lags (\code{order = 1:k}), shows the
+size of the indirect effect at each order, with confidence intervals.
 }
-\keyword{internal}

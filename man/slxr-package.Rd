@@ -19,7 +19,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Cameron Wimpy \email{cwimpy@astate.edu}
+\strong{Maintainer}: Cameron Wimpy \email{cwimpy@astate.edu} (\href{https://orcid.org/0000-0002-2049-5229}{ORCID})
 
 }
 \keyword{internal}

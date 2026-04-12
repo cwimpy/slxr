@@ -17,6 +17,21 @@ test_that("slx() fits a single-W model and slx_effects() returns rows", {
   expect_true(all(c("direct", "indirect", "total") %in% eff$type))
 })
 
+test_that("slx_plot_effects() returns a ggplot", {
+  skip_if_not_installed("sf")
+  skip_if_not_installed("spdep")
+  skip_if_not_installed("ggplot2")
+
+  nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"),
+                    quiet = TRUE)
+  W <- slx_weights(nc, style = "contiguity")
+  fit <- slx(SID74 ~ BIR74 + NWBIR74,
+             data = nc, W = W, lag = "BIR74")
+
+  p <- slx_plot_effects(fit)
+  expect_s3_class(p, "ggplot")
+})
+
 test_that("slx_weights() returns an slx_W object", {
   skip_if_not_installed("sf")
 

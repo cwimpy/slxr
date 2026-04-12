@@ -4,13 +4,39 @@
 \alias{slx_plot_effects}
 \title{Coefficient plot of direct, indirect, and total effects}
 \usage{
-slx_plot_effects(fit)
+slx_plot_effects(
+  fit,
+  types = c("direct", "indirect", "total"),
+  conf.level = 0.95,
+  by_order = FALSE,
+  ...
+)
 }
 \arguments{
-\item{fit}{An \code{slx} model.}
+\item{fit}{An \code{slx} object returned by \code{\link[=slx]{slx()}}.}
+
+\item{types}{Character vector of effect types to include. Any subset of
+\code{c("direct", "indirect", "total")}. Default shows all three.}
+
+\item{conf.level}{Confidence level for the intervals. Default 0.95.}
+
+\item{by_order}{Logical; if \code{TRUE}, break indirect effects out by order
+of W. Default \code{FALSE}.}
+
+\item{...}{Passed to \code{\link[=slx_effects]{slx_effects()}}.}
+}
+\value{
+A \code{ggplot} object.
 }
 \description{
-Stub — v0.2. Planned: a ggplot-based coefficient plot summarizing the
-output of \code{\link[=slx_effects]{slx_effects()}}.
+Produces a ggplot of the direct, indirect, and total effects from an
+SLX model, with 95\% confidence intervals. For models with
+variable-specific weights matrices, effects are faceted by \code{w_name}
+so spillover patterns from each matrix are visible side-by-side.
 }
-\keyword{internal}
+\examples{
+\dontrun{
+fit <- slx(SID74 ~ BIR74 + NWBIR74, data = nc, W = W, lag = "BIR74")
+slx_plot_effects(fit)
+}
+}

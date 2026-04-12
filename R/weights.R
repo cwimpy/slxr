@@ -43,7 +43,7 @@ slx_weights <- function(x,
     if (is.null(matrix)) {
       stop("`matrix` must be supplied when style = 'custom'.", call. = FALSE)
     }
-    W <- methods::as(matrix, "CsparseMatrix")
+    W <- Matrix::Matrix(as.matrix(matrix), sparse = TRUE)
   } else {
     if (!requireNamespace("spdep", quietly = TRUE)) {
       stop("Package 'spdep' is required for style = '", style, "'.",
@@ -69,7 +69,7 @@ slx_weights <- function(x,
                           style = if (row_standardize) "W" else "B",
                           zero.policy = TRUE)
     W <- spdep::listw2mat(lw)
-    W <- methods::as(W, "CsparseMatrix")
+    W <- Matrix::Matrix(W, sparse = TRUE)
   }
 
   if (style != "custom" && row_standardize) {

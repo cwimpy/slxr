@@ -48,7 +48,10 @@ fit <- slx(turnout ~ income + college + age,
 
 summary(fit)
 slx_effects(fit)        # direct / indirect / total
+slx_plot_effects(fit)   # publication-ready coefplot
 ```
+
+![SLX effects plot](man/figures/README-effects.png)
 
 Variable-specific weights matrices:
 

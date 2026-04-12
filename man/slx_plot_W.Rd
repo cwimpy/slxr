@@ -4,12 +4,20 @@
 \alias{slx_plot_W}
 \title{Heatmap of a spatial weights matrix}
 \usage{
-slx_plot_W(W)
+slx_plot_W(W, max_n = NULL, labels = NULL)
 }
 \arguments{
 \item{W}{An \code{slx_W} object.}
+
+\item{max_n}{Optional integer; if \code{nrow(W) > max_n}, a random sample
+of rows/columns is plotted. Default \code{NULL} (plot everything).}
+
+\item{labels}{Optional character vector of row/column labels.}
+}
+\value{
+A \code{ggplot} object.
 }
 \description{
-Stub — v0.2.
+A quick visual check on the structure of a weights matrix. For large
+\code{n} the heatmap becomes noisy; use the \code{max_n} argument to subsample.
 }
-\keyword{internal}

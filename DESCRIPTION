@@ -26,11 +26,10 @@ Imports:
     spdep,
     sf,
     Matrix,
-    dplyr,
     tibble,
-    rlang,
     stats,
-    generics
+    generics,
+    rlang
 Suggests:
     ggplot2,
     modelsummary,
