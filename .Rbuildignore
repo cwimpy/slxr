@@ -7,6 +7,7 @@
 ^replication$
 ^\.gitignore$
 ^cran-comments\.md$
+^CRAN-SUBMISSION$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
