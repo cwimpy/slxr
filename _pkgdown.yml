@@ -1,0 +1,53 @@
+url: https://cwimpy.github.io/slxr/
+
+template:
+  bootstrap: 5
+  bootswatch: cosmo
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [github]
+  components:
+    articles:
+      text: Articles
+      menu:
+        - text: Getting started
+          href: articles/getting-started.html
+        - text: Replicating Wimpy, Whitten, and Williams (2021)
+          href: articles/replicating-wimpy-2021.html
+
+reference:
+  - title: Fit an SLX model
+    contents:
+      - slx
+      - slx_weights
+  - title: Interpretation
+    contents:
+      - slx_effects
+      - slx_compare
+  - title: Visualization
+    contents:
+      - slx_plot_effects
+      - slx_plot_decay
+      - slx_plot_shock
+      - slx_plot_W
+  - title: Data
+    contents:
+      - defense_burden
+      - defense_burden_panel
+  - title: broom / modelsummary integration
+    contents:
+      - slx-tidiers
+      - reexports
+  - title: internal
+    contents:
+      - slx_sensitivity
+
+articles:
+  - title: Get started
+    contents:
+      - getting-started
+  - title: Applications
+    contents:
+      - replicating-wimpy-2021
