@@ -36,8 +36,6 @@ A tibble with one row per model.
 data(defense_burden)
 W <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
                  row_standardize = FALSE)
-#> Warning: style is M (missing); style should be set to a valid value
-#> Warning: neighbour object has 34 sub-graphs
 ols <- lm(ch_milex ~ milex_tm1 + civilwar_tm1,
           data = defense_burden$data)
 slx_fit <- slx(ch_milex ~ milex_tm1 + civilwar_tm1,

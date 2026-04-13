@@ -53,10 +53,6 @@ spillover from interstate wars in neighboring countries.
 W_contig <- slx_weights(style = "custom",
                         matrix = defense_burden$W_contig,
                         row_standardize = FALSE)
-#> Warning in spdep::mat2listw(as.matrix(W), style = "M", zero.policy = TRUE):
-#> style is M (missing); style should be set to a valid value
-#> Warning in spdep::mat2listw(as.matrix(W), style = "M", zero.policy = TRUE):
-#> neighbour object has 34 sub-graphs
 
 fit <- slx(ch_milex ~ milex_tm1 + log_pop_tm1 + civilwar_tm1 +
                       total_wars_tm1 + alliance_us +
@@ -113,17 +109,9 @@ military spending. All three mechanisms can sit in a single model.
 W_alliance <- slx_weights(style = "custom",
                           matrix = defense_burden$W_alliance,
                           row_standardize = FALSE)
-#> Warning in spdep::mat2listw(as.matrix(W), style = "M", zero.policy = TRUE):
-#> style is M (missing); style should be set to a valid value
-#> Warning in spdep::mat2listw(as.matrix(W), style = "M", zero.policy = TRUE):
-#> neighbour object has 61 sub-graphs
 W_defense  <- slx_weights(style = "custom",
                           matrix = defense_burden$W_defense,
                           row_standardize = FALSE)
-#> Warning in spdep::mat2listw(as.matrix(W), style = "M", zero.policy = TRUE):
-#> style is M (missing); style should be set to a valid value
-#> Warning in spdep::mat2listw(as.matrix(W), style = "M", zero.policy = TRUE):
-#> neighbour object has 81 sub-graphs
 
 fit_multi <- slx(
   ch_milex ~ milex_tm1 + log_pop_tm1 + civilwar_tm1 +

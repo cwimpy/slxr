@@ -118,10 +118,6 @@ countries.</p>
 <code class="sourceCode R"><span><span class="va">W_contig</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slx_weights.html">slx_weights</a></span><span class="op">(</span>style <span class="op">=</span> <span class="st">"custom"</span>,</span>
 <span>                        matrix <span class="op">=</span> <span class="va">defense_burden</span><span class="op">$</span><span class="va">W_contig</span>,</span>
 <span>                        row_standardize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in spdep::mat2listw(as.matrix(W), style = "M", zero.policy = TRUE):</span></span>
-<span><span class="co">#&gt; style is M (missing); style should be set to a valid value</span></span>
-<span><span class="co">#&gt; Warning in spdep::mat2listw(as.matrix(W), style = "M", zero.policy = TRUE):</span></span>
-<span><span class="co">#&gt; neighbour object has 34 sub-graphs</span></span>
 <span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slx.html">slx</a></span><span class="op">(</span><span class="va">ch_milex</span> <span class="op">~</span> <span class="va">milex_tm1</span> <span class="op">+</span> <span class="va">log_pop_tm1</span> <span class="op">+</span> <span class="va">civilwar_tm1</span> <span class="op">+</span></span>
 <span>                      <span class="va">total_wars_tm1</span> <span class="op">+</span> <span class="va">alliance_us</span> <span class="op">+</span></span>
@@ -174,17 +170,9 @@ military spending. All three mechanisms can sit in a single model.</p>
 <code class="sourceCode R"><span><span class="va">W_alliance</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slx_weights.html">slx_weights</a></span><span class="op">(</span>style <span class="op">=</span> <span class="st">"custom"</span>,</span>
 <span>                          matrix <span class="op">=</span> <span class="va">defense_burden</span><span class="op">$</span><span class="va">W_alliance</span>,</span>
 <span>                          row_standardize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in spdep::mat2listw(as.matrix(W), style = "M", zero.policy = TRUE):</span></span>
-<span><span class="co">#&gt; style is M (missing); style should be set to a valid value</span></span>
-<span><span class="co">#&gt; Warning in spdep::mat2listw(as.matrix(W), style = "M", zero.policy = TRUE):</span></span>
-<span><span class="co">#&gt; neighbour object has 61 sub-graphs</span></span>
 <span><span class="va">W_defense</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slx_weights.html">slx_weights</a></span><span class="op">(</span>style <span class="op">=</span> <span class="st">"custom"</span>,</span>
 <span>                          matrix <span class="op">=</span> <span class="va">defense_burden</span><span class="op">$</span><span class="va">W_defense</span>,</span>
 <span>                          row_standardize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in spdep::mat2listw(as.matrix(W), style = "M", zero.policy = TRUE):</span></span>
-<span><span class="co">#&gt; style is M (missing); style should be set to a valid value</span></span>
-<span><span class="co">#&gt; Warning in spdep::mat2listw(as.matrix(W), style = "M", zero.policy = TRUE):</span></span>
-<span><span class="co">#&gt; neighbour object has 81 sub-graphs</span></span>
 <span></span>
 <span><span class="va">fit_multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slx.html">slx</a></span><span class="op">(</span></span>
 <span>  <span class="va">ch_milex</span> <span class="op">~</span> <span class="va">milex_tm1</span> <span class="op">+</span> <span class="va">log_pop_tm1</span> <span class="op">+</span> <span class="va">civilwar_tm1</span> <span class="op">+</span></span>

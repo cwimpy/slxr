@@ -154,8 +154,6 @@ Regional Science*, 55(3), 339-363.
 data(defense_burden)
 W_c <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
                    row_standardize = FALSE)
-#> Warning: style is M (missing); style should be set to a valid value
-#> Warning: neighbour object has 34 sub-graphs
 fit <- slx(ch_milex ~ milex_tm1 + log_pop_tm1 + civilwar_tm1,
            data = defense_burden$data, W = W_c, lag = "civilwar_tm1")
 slx_effects(fit)
