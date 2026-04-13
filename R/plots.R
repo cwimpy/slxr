@@ -139,6 +139,190 @@ slx_plot_decay <- function(fit, variables = NULL, conf.level = 0.95) {
     ggplot2::theme_minimal()
 }
 
+#' Counterfactual shock plot
+#'
+#' Given a fitted SLX model, a choice of variable, and a target unit,
+#' returns a plot of the predicted change in the outcome across every
+#' unit in the sample under a unit shock to that variable in the
+#' target unit.
+#'
+#' For an SLX model at first order with channels indexed by `c`, the
+#' predicted change at unit `j` from a shock of size `magnitude` to
+#' variable `x` in unit `i` is
+#' \deqn{\text{magnitude}\ \left(\beta\ \mathbb{1}\{j=i\} + \sum_c \theta_c\ W_c[j, i]\right).}
+#' Higher-order lags add additional `theta_{c,k} (W_c^k)[j, i]` terms.
+#' No simulation is required: the shock effect is a single column of
+#' the spatial multiplier.
+#'
+#' If an `sf` object with matching row count is supplied via `geom`,
+#' the result is drawn as a choropleth. Otherwise a horizontal bar of
+#' the largest effects is returned.
+#'
+#' @param fit A cross-sectional `slx` model. Panel shocks are planned
+#'   for a future release.
+#' @param variable Character, the name of a spatially-lagged regressor
+#'   in `fit` to shock.
+#' @param unit Integer row index (or character id, if the weights
+#'   matrix has dimnames matching something in `fit$data`) of the unit
+#'   receiving the shock.
+#' @param magnitude Numeric, shock size. Default `1`.
+#' @param geom Optional `sf` object with `nrow(geom) == fit$n` aligned
+#'   to `fit$data`. If supplied, the function returns a map.
+#' @param top_n For the non-map plot, how many non-zero indirect
+#'   effects to show. Default `15`.
+#'
+#' @return A `ggplot` object.
+#'
+#' @examples
+#' \dontrun{
+#' data(defense_burden)
+#' W_c <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
+#'                    row_standardize = FALSE)
+#' fit <- slx(ch_milex ~ milex_tm1 + civilwar_tm1,
+#'            data = defense_burden$data, W = W_c,
+#'            lag = "civilwar_tm1")
+#' slx_plot_shock(fit, variable = "civilwar_tm1", unit = 1)
+#' }
+#' @export
+slx_plot_shock <- function(fit, variable, unit,
+                           magnitude = 1,
+                           geom = NULL,
+                           top_n = 15) {
+
+  stopifnot(inherits(fit, "slx"))
+  if (isTRUE(fit$panel)) {
+    stop("slx_plot_shock() is not yet implemented for panel fits. ",
+         "A panel version requires a target time period and will ",
+         "land in a future release.", call. = FALSE)
+  }
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    stop("Package 'ggplot2' is required for slx_plot_shock().",
+         call. = FALSE)
+  }
+
+  lt  <- fit$lag_terms
+  lt  <- lt[lt$variable == variable, , drop = FALSE]
+  if (nrow(lt) == 0L) {
+    stop("Variable '", variable,
+         "' is not spatially lagged in this fit.", call. = FALSE)
+  }
+
+  cf <- stats::coef(fit$fit)
+  n  <- fit$n
+
+  # Resolve unit to integer row index
+  idx <- if (is.numeric(unit)) {
+    as.integer(unit)
+  } else if (is.character(unit)) {
+    # try to find in first W available
+    first_W <- fit$spec[[variable]][[1]]$provider$W
+    rn <- rownames(first_W)
+    if (is.null(rn) || !unit %in% rn) {
+      stop("Could not resolve unit '", unit, "'.", call. = FALSE)
+    }
+    match(unit, rn)
+  } else {
+    stop("`unit` must be an integer row index or a character id.",
+         call. = FALSE)
+  }
+  if (is.na(idx) || idx < 1L || idx > n) {
+    stop("`unit` index out of range.", call. = FALSE)
+  }
+
+  # Direct contribution
+  effect <- numeric(n)
+  if (variable %in% names(cf)) effect[idx] <- cf[[variable]]
+
+  # Indirect contributions: sum over channels and orders
+  for (i in seq_len(nrow(lt))) {
+    colnm <- lt$colname[i]
+    if (!colnm %in% names(cf)) next
+    theta <- cf[[colnm]]
+    ord   <- lt$order[i]
+    w_name <- lt$w_name[i]
+
+    # Find the slx_W that produced this term
+    channels <- fit$spec[[variable]]
+    provider <- NULL
+    for (ch in channels) {
+      if (identical(ch$name %||% "W", w_name)) {
+        provider <- ch$provider
+        break
+      }
+    }
+    if (is.null(provider) || !inherits(provider, "slx_W")) next
+
+    Wmat <- provider$W
+    Wk   <- Wmat
+    if (ord > 1L) for (k in 2:ord) Wk <- Wk %*% Wmat
+    effect <- effect + theta * as.numeric(Wk[, idx])
+  }
+
+  effect <- effect * magnitude
+
+  if (!is.null(geom)) {
+    if (!requireNamespace("sf", quietly = TRUE)) {
+      stop("Package 'sf' is required when `geom` is supplied.",
+           call. = FALSE)
+    }
+    if (nrow(geom) != n) {
+      stop("`geom` must have ", n, " rows to align with fit.",
+           call. = FALSE)
+    }
+    gdf <- geom
+    gdf$.effect <- effect
+    gdf$.shocked <- seq_len(n) == idx
+    return(
+      ggplot2::ggplot(gdf) +
+        ggplot2::geom_sf(ggplot2::aes(fill = .data$.effect),
+                         colour = "grey80", linewidth = 0.1) +
+        ggplot2::geom_sf(data = gdf[gdf$.shocked, , drop = FALSE],
+                         fill = NA, colour = "black", linewidth = 0.6) +
+        ggplot2::scale_fill_gradient2(
+          low = "#b2182b", mid = "white", high = "#2166ac",
+          midpoint = 0
+        ) +
+        ggplot2::labs(
+          title = sprintf(
+            "Predicted change in outcome from shock to %s (unit %d)",
+            variable, idx
+          ),
+          fill = "Effect"
+        ) +
+        ggplot2::theme_minimal()
+    )
+  }
+
+  # No geometry: show the largest-magnitude effects as a bar
+  df <- data.frame(
+    row    = seq_len(n),
+    effect = effect,
+    shocked = seq_len(n) == idx
+  )
+  df <- df[order(-abs(df$effect)), , drop = FALSE]
+  df <- utils::head(df, top_n)
+  df$row <- factor(df$row, levels = rev(df$row))
+
+  ggplot2::ggplot(df,
+                  ggplot2::aes(x = .data$effect, y = .data$row,
+                               fill = .data$shocked)) +
+    ggplot2::geom_col() +
+    ggplot2::geom_vline(xintercept = 0, linetype = "dashed",
+                        colour = "grey60") +
+    ggplot2::scale_fill_manual(values = c(`TRUE` = "firebrick",
+                                          `FALSE` = "steelblue"),
+                               guide = "none") +
+    ggplot2::labs(
+      x = "Predicted change in outcome",
+      y = "Row index",
+      title = sprintf(
+        "Top %d effects from shock to %s (unit %d)",
+        nrow(df), variable, idx
+      )
+    ) +
+    ggplot2::theme_minimal()
+}
+
 #' Heatmap of a spatial weights matrix
 #'
 #' A quick visual check on the structure of a weights matrix. For large

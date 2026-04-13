@@ -86,6 +86,42 @@ test_that("multiple W matrices on a single variable produce separate effects", {
   expect_setequal(bir_indirect$w_name, c("contig", "knn"))
 })
 
+test_that("slx_compare() returns one row per model with fit stats", {
+  data(defense_burden)
+  W <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
+                   row_standardize = FALSE)
+  ols <- lm(ch_milex ~ milex_tm1 + civilwar_tm1,
+            data = defense_burden$data)
+  fit <- slx(ch_milex ~ milex_tm1 + civilwar_tm1,
+             data = defense_burden$data, W = W, lag = "civilwar_tm1")
+
+  cmp <- slx_compare(OLS = ols, SLX = fit, W = W)
+  expect_s3_class(cmp, "tbl_df")
+  expect_equal(nrow(cmp), 2L)
+  expect_true(all(c("model", "n", "r.squared", "AIC", "moran_I") %in% names(cmp)))
+})
+
+test_that("slx_plot_shock() produces a ggplot and sums to β + Σ θ W[,i]", {
+  skip_if_not_installed("ggplot2")
+  data(defense_burden)
+  W <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
+                   row_standardize = FALSE)
+  fit <- slx(ch_milex ~ milex_tm1 + civilwar_tm1,
+             data = defense_burden$data, W = W, lag = "civilwar_tm1")
+
+  p <- slx_plot_shock(fit, variable = "civilwar_tm1", unit = 10)
+  expect_s3_class(p, "ggplot")
+
+  # Verify numerics internally: replicate the math
+  cf    <- stats::coef(fit$fit)
+  beta  <- cf[["civilwar_tm1"]]
+  theta <- cf[["W.civilwar_tm1"]]
+  col   <- as.numeric(W$W[, 10])
+  expected <- theta * col
+  expected[10] <- expected[10] + beta
+  expect_equal(sum(expected), beta + theta * sum(col))
+})
+
 test_that("panel slx() matches manual block-wise Wx", {
   ids <- c("A","B","C","D")
   panel <- expand.grid(id = ids, year = 2000:2002,

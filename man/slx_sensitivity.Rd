@@ -12,7 +12,7 @@ slx_sensitivity(fit, W_list)
 \item{W_list}{A named list of \code{slx_W} objects.}
 }
 \description{
-Stub — v0.2. Planned: refit an SLX model across a list of alternative
+Stub - v0.2. Planned: refit an SLX model across a list of alternative
 \code{W} specifications and return a tidy comparison of key effects.
 }
 \keyword{internal}

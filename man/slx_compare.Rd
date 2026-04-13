@@ -2,15 +2,37 @@
 % Please edit documentation in R/diagnostics.R
 \name{slx_compare}
 \alias{slx_compare}
-\title{Compare SLX with alternative models}
+\title{Compare OLS, SLX, and other lm-like models side by side}
 \usage{
-slx_compare(...)
+slx_compare(..., W = NULL)
 }
 \arguments{
-\item{...}{Fitted models.}
+\item{...}{Named \code{lm} or \code{slx} models. Names are used as the model
+labels in the output.}
+
+\item{W}{Optional weights matrix to use for Moran's I on residuals.
+Accepts an \code{slx_W}, a \code{listw} object from \code{spdep}, or \code{NULL} to
+skip the test. In panel mode, supply a list keyed by time value.}
+}
+\value{
+A tibble with one row per model.
 }
 \description{
-Stub — v0.2. Planned: side-by-side fit statistics (AIC/BIC), Moran's I
-on residuals, and LM tests versus OLS and SAR baselines.
+Builds a tidy tibble of fit statistics (observations, coefficient
+count, R-squared, adjusted R-squared, residual standard error, AIC,
+BIC) for any combination of \code{lm} and \code{slx} objects. If a weights
+matrix is supplied, also reports Moran's I on each model's
+residuals - the standard diagnostic for spatial autocorrelation
+left unexplained by the fitted model.
 }
-\keyword{internal}
+\examples{
+data(defense_burden)
+W <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
+                 row_standardize = FALSE)
+ols <- lm(ch_milex ~ milex_tm1 + civilwar_tm1,
+          data = defense_burden$data)
+slx_fit <- slx(ch_milex ~ milex_tm1 + civilwar_tm1,
+               data = defense_burden$data, W = W,
+               lag = "civilwar_tm1")
+slx_compare(OLS = ols, SLX = slx_fit, W = W)
+}
