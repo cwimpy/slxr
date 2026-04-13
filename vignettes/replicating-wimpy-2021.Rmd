@@ -1,0 +1,154 @@
+---
+title: "Replicating Wimpy, Whitten, and Williams (2021)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Replicating Wimpy, Whitten, and Williams (2021)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+```
+
+This vignette reproduces the headline finding from Wimpy, Whitten,
+and Williams (2021, *Journal of Politics*): defense spending responds
+to the military expenditures of geographically-contiguous neighbors
+*and* of formal defense-pact partners, with each channel operating
+through a distinct spatial structure. Estimating both channels
+simultaneously requires variable-specific weights matrices in a
+single regression - exactly what the SLX framework makes easy and the
+SAR framework cannot accommodate.
+
+The full 1951-2008 panel and three year-specific weights matrices
+ship with `slxr` as `defense_burden_panel`.
+
+## Data
+
+```{r data}
+library(slxr)
+data(defense_burden_panel)
+
+panel <- defense_burden_panel
+dim(panel$data)
+range(panel$data$year)
+length(panel$W_contig)   # one W per year
+```
+
+Each of the three weights-matrix lists is keyed by year and contains
+a row-standardized sparse matrix covering the countries observed
+that year. Panel is unbalanced - new states join the system and some
+states exit.
+
+## Wrapping the weights matrices
+
+The sparse matrices are stored as plain `dgCMatrix` objects so the
+dataset does not depend on the rest of `slxr` loading. To feed them
+to `slx()` we wrap each one as an `slx_W` object:
+
+```{r wrap}
+wrap_list <- function(W_list) {
+  lapply(W_list, \(m) slx_weights(style = "custom",
+                                  matrix = m,
+                                  row_standardize = FALSE))
+}
+
+Wc <- wrap_list(panel$W_contig)    # year-varying contiguity
+Wa <- wrap_list(panel$W_alliance)  # year-varying alliances
+Wd <- wrap_list(panel$W_defense)   # year-varying defense pacts
+```
+
+## Fitting the multi-W panel SLX
+
+Model 3 in the paper's Table 3 lags three variables through the
+appropriate spatial structures:
+
+- **civil wars** spread through geography, so `civilwar_tm1` is
+  lagged only through contiguity;
+- **interstate wars** produce joint responses from both contiguous
+  neighbors and formal allies, so `total_wars_tm1` is lagged through
+  *both* contiguity and alliance Ws;
+- **defense spending** is coordinated among contiguous neighbors
+  and defense-pact partners, so `milex_tm1` is lagged through both
+  contiguity and defense.
+
+In `slxr` each of those specifications is a line of the `spatial`
+argument:
+
+```{r fit}
+fit <- slx(
+  ch_milex ~ milex_tm1 + log_pop_tm1 + civilwar_tm1 + total_wars_tm1 +
+             alliance_us + ch_milex_us + ch_milex_ussr,
+  data    = panel$data,
+  spatial = list(
+    civilwar_tm1   = Wc,
+    total_wars_tm1 = list(contig = Wc, alliance = Wa),
+    milex_tm1      = list(contig = Wc, defense  = Wd)
+  ),
+  id   = "ccode",
+  time = "year"
+)
+
+summary(fit)
+```
+
+Three lines of `spatial = list(...)` expand into five spatial-lag
+regressors under the hood, each multiplied by the appropriate
+year-specific `W` block. Printing the model shows the five
+`W.variable__channel` columns alongside the direct regressors.
+
+## Direct, indirect, and total effects
+
+Because SLX is plain OLS, decomposition into direct, indirect, and
+total effects is just addition and the variance of a linear
+combination - no matrix inversion, no simulation:
+
+```{r effects}
+slx_effects(fit)
+```
+
+The key substantive findings from the paper survive in this
+simplified specification:
+
+- `milex_tm1` through defense pact: strong positive spillover
+  (partners coordinate),
+- `milex_tm1` through contiguity: near-zero (simple adjacency does
+  not by itself produce convergence),
+- `civilwar_tm1` through contiguity: negative (civil-war-afflicted
+  neighbors draw spending away),
+- `total_wars_tm1` through contiguity: positive (interstate wars in
+  neighbors raise own burden).
+
+## Visualization
+
+The multi-W plot facets by weights-matrix channel automatically, so
+the two spillover paths for each dual-W variable are displayed
+side-by-side:
+
+```{r plot, fig.height = 5}
+library(ggplot2)
+slx_plot_effects(fit, types = c("indirect", "total"))
+```
+
+## Caveats
+
+The model fit here is a streamlined version of Wimpy, Whitten, and
+Williams (2021) Table 3 Model 3. For a bit-exact replication the
+additional covariates in the paper (region fixed effects, annual
+trend, 1992 dummy, U.S.-ally interactions, the twice-lagged change
+in military expenditures) should be added as standard RHS terms.
+The point of this vignette is not numerical identity but to
+demonstrate that the paper's core argument - variable-specific `W`
+matrices estimated in a single linear regression - is three lines
+of `slxr` code.
+
+A temporally-lagged spatial-lag (TSLS, equation 7 in the paper)
+specification is available via `slx(..., time_lag = 1)`. This shifts
+every `Wx` term back one period within unit, reflecting the intuition
+that responses to neighbors' covariates happen with a lag.
+
+## References
+
+Wimpy, C., Whitten, G. D., & Williams, L. K. (2021). X Marks the
+Spot: Unlocking the Treasure of Spatial-X Models. *Journal of
+Politics*, 83(2), 722-739. \doi{10.1086/710089}

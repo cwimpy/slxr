@@ -86,6 +86,110 @@ test_that("multiple W matrices on a single variable produce separate effects", {
   expect_setequal(bir_indirect$w_name, c("contig", "knn"))
 })
 
+test_that("panel slx() matches manual block-wise Wx", {
+  ids <- c("A","B","C","D")
+  panel <- expand.grid(id = ids, year = 2000:2002,
+                       stringsAsFactors = FALSE)
+  panel$x <- seq_len(nrow(panel)) + 0.5
+  panel$y <- rnorm(nrow(panel))
+
+  Wmat <- Matrix::Matrix(c(0,1,0,0, 1,0,1,0, 0,1,0,0, 0,0,0,0),
+                         4, 4, byrow = TRUE, sparse = TRUE)
+  dimnames(Wmat) <- list(ids, ids)
+  W <- slx_weights(style = "custom", matrix = Wmat,
+                   row_standardize = FALSE)
+
+  fit <- slx(y ~ x, data = panel, W = W, lag = "x",
+             id = "id", time = "year")
+
+  # Expected W.x for year 2000 directly
+  y00    <- panel[panel$year == 2000, ]
+  expect <- as.numeric(Wmat %*% y00$x)
+  got    <- fit$data$W.x[fit$data[[".slx_time"]] == 2000]
+  expect_equal(unname(got), expect)
+})
+
+test_that("panel TSLS shifts W.x by one period within unit", {
+  ids <- c("A","B","C")
+  panel <- expand.grid(id = ids, year = 2000:2002,
+                       stringsAsFactors = FALSE)
+  panel$x <- seq_len(nrow(panel)) + 0.5
+  panel$y <- rnorm(nrow(panel))
+
+  Wmat <- Matrix::Matrix(c(0,1,0, 1,0,1, 0,1,0), 3, 3,
+                         byrow = TRUE, sparse = TRUE)
+  dimnames(Wmat) <- list(ids, ids)
+  W <- slx_weights(style = "custom", matrix = Wmat,
+                   row_standardize = FALSE)
+
+  fit0 <- slx(y ~ x, data = panel, W = W, lag = "x",
+              id = "id", time = "year", time_lag = 0)
+  fit1 <- slx(y ~ x, data = panel, W = W, lag = "x",
+              id = "id", time = "year", time_lag = 1)
+
+  for (unit in ids) {
+    # 2001 WL1.x should equal 2000 W.x within the same unit
+    a <- fit1$data[fit1$data[[".slx_id"]] == unit &
+                    fit1$data[[".slx_time"]] == 2001, "WL1.x"]
+    b <- fit0$data[fit0$data[[".slx_id"]] == unit &
+                    fit0$data[[".slx_time"]] == 2000, "W.x"]
+    expect_equal(unname(a), unname(b))
+  }
+  # First-period TSLS rows are NA and dropped by lm()
+  expect_true(all(is.na(fit1$data[fit1$data[[".slx_time"]] == 2000,
+                                  "WL1.x"])))
+})
+
+test_that("time-varying W list dispatches by year", {
+  ids <- c("A","B","C")
+  panel <- expand.grid(id = ids, year = 2000:2001,
+                       stringsAsFactors = FALSE)
+  panel$x <- seq_len(nrow(panel)) + 0.5
+  panel$y <- rnorm(nrow(panel))
+
+  # W00: A-B only; W01: B-C only
+  M00 <- Matrix::Matrix(c(0,1,0, 1,0,0, 0,0,0), 3, 3,
+                        byrow = TRUE, sparse = TRUE)
+  M01 <- Matrix::Matrix(c(0,0,0, 0,0,1, 0,1,0), 3, 3,
+                        byrow = TRUE, sparse = TRUE)
+  dimnames(M00) <- dimnames(M01) <- list(ids, ids)
+
+  W00 <- slx_weights(style = "custom", matrix = M00, row_standardize = FALSE)
+  W01 <- slx_weights(style = "custom", matrix = M01, row_standardize = FALSE)
+
+  fit <- slx(y ~ x, data = panel,
+             W = list("2000" = W00, "2001" = W01),
+             lag = "x", id = "id", time = "year")
+
+  # Year 2000: W00 %*% x00
+  x00 <- panel$x[panel$year == 2000]
+  x01 <- panel$x[panel$year == 2001]
+  expect_equal(unname(fit$data$W.x[fit$data[[".slx_time"]] == 2000]),
+               as.numeric(M00 %*% x00))
+  expect_equal(unname(fit$data$W.x[fit$data[[".slx_time"]] == 2001]),
+               as.numeric(M01 %*% x01))
+})
+
+test_that("defense_burden_panel fits a multi-W panel SLX", {
+  data(defense_burden_panel)
+  db <- defense_burden_panel
+  wrap_list <- function(W_list) {
+    lapply(W_list, function(m) slx_weights(style = "custom", matrix = m,
+                                            row_standardize = FALSE))
+  }
+  Wc <- wrap_list(db$W_contig)
+  Wd <- wrap_list(db$W_defense)
+
+  fit <- slx(ch_milex ~ milex_tm1 + log_pop_tm1,
+             data = db$data,
+             spatial = list(milex_tm1 = list(contig = Wc, defense = Wd)),
+             id = "ccode", time = "year")
+
+  expect_true(fit$panel)
+  expect_true("W.milex_tm1__defense" %in% names(coef(fit)))
+  expect_equal(fit$n, nrow(db$data))
+})
+
 test_that("slx_weights() returns an slx_W object", {
   skip_if_not_installed("sf")
 

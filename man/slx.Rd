@@ -21,33 +21,38 @@ slx(
 \item{formula}{A standard model formula, e.g. \code{y ~ x1 + x2 + x3}.}
 
 \item{data}{A data frame (or \code{sf} object) whose rows correspond, in
-order, to the rows/columns of \code{W}.}
+order, to the rows/columns of \code{W} (cross-sectional mode) or contain
+\code{id} and \code{time} columns (panel mode).}
 
-\item{W}{An \code{slx_W} object produced by \code{\link[=slx_weights]{slx_weights()}}, or a numeric or
-sparse matrix. Required when \code{spatial} is not supplied.}
+\item{W}{An \code{slx_W} object produced by \code{\link[=slx_weights]{slx_weights()}}, a numeric or
+sparse matrix, or - in panel mode - a named list of such objects
+keyed by time value. Required when \code{spatial} is not supplied.}
 
 \item{lag}{Character vector of variable names from \code{formula} that
 should be spatially lagged. If \code{NULL} (default) and \code{W} is supplied,
 all right-hand-side variables are lagged.}
 
 \item{order}{Integer vector giving the orders of \code{W} to include for
-each lagged variable (e.g. \code{1:2} adds both \code{Wx} and \verb{W²x}). Default
-\code{1}.}
+each lagged variable (e.g. \code{1:2} adds both \code{Wx} and \verb{W^2 x}).
+Default \code{1}.}
 
 \item{spatial}{Optional named list for variable-specific weights
 matrices. Names must match variables in \code{formula}. Each element is
-either an \code{slx_W} object or a list of them (for multiple \code{W} per
-variable, as in Wimpy, Whitten, and Williams 2021). When supplied,
-\code{W} and \code{lag} are ignored.}
+either an \code{slx_W}, a list of \code{slx_W}s (multiple channels for one
+variable), a time-keyed list of \code{slx_W}s (single channel, time-
+varying), or a named list of channels whose values are themselves
+single or time-keyed \code{slx_W}s.}
 
 \item{time_lag}{Integer, number of time periods to lag the spatial
-terms (TSLS). Requires \code{id} and \code{time}.}
+terms (TSLS). Requires \code{id} and \code{time}. Default \code{0}.}
 
-\item{id, time}{Column names identifying panel unit and period. Only
-used when \code{time_lag > 0}.}
+\item{id, time}{Column names identifying the panel unit and period.
+Required for panel mode or TSLS. \code{time} must be numeric.}
 
 \item{na.action}{How to handle missing values. Defaults to
-\code{stats::na.omit}.}
+\code{stats::na.omit} in cross-sectional mode. In panel mode missing
+values on formula variables are dropped; \code{id} and \code{time} must never
+be missing.}
 }
 \value{
 An object of class \code{slx} with elements:
@@ -57,8 +62,9 @@ An object of class \code{slx} with elements:
 \item{\code{call}}{The original call.}
 \item{\code{W}}{The weights matrix (or list thereof) used.}
 \item{\code{lag_terms}}{A data frame mapping spatial-lag terms to their
-source variable, W matrix, and order.}
+source variable, W matrix, order, and time lag.}
 \item{\code{data}}{The (possibly augmented) model frame.}
+\item{\code{panel}}{Logical flag.}
 }
 }
 \description{
@@ -70,21 +76,48 @@ spatially lagged. SLX estimation is OLS on the augmented design matrix,
 which makes estimation, interpretation, and effects decomposition much
 simpler than for SAR-family models (Wimpy, Whitten, and Williams 2021).
 }
-\examples{
-\dontrun{
-library(sf)
-nc <- st_read(system.file("shape/nc.shp", package = "sf"))
-W  <- slx_weights(nc, style = "contiguity")
-fit <- slx(SID74 ~ BIR74 + NWBIR74, data = nc, W = W, lag = "BIR74")
-summary(fit)
-slx_effects(fit)
+\section{Cross-sectional and panel modes}{
+
+When \code{id} and \code{time} are \code{NULL}, \code{slx()} treats the data as a single
+cross-section: rows of \code{data} must correspond, in order, to the rows
+and columns of \code{W}. When both \code{id} and \code{time} are supplied, \code{slx()}
+enters panel mode and performs block-wise spatial lagging period by
+period. In panel mode the weights matrices must have \code{dimnames}
+matching the unit identifiers in \code{data[[id]]}; the same units need
+not appear in every period (unbalanced panels are supported).
 }
+
+\section{Time-varying weights}{
+
+In panel mode, a \code{W} argument can be either (a) a single \code{slx_W}
+object applied to every period or (b) a named list of \code{slx_W}
+objects keyed by the stringified \code{time} value (e.g.
+\code{list("1990" = W_90, "1991" = W_91)}). The same options apply to
+any entry inside \code{spatial}.
+}
+
+\section{Temporally-lagged spatial lag (TSLS)}{
+
+The \code{time_lag} argument implements equation 7 of Wimpy, Whitten,
+and Williams (2021): it lags every constructed spatial term \verb{W_t x}
+by \code{time_lag} periods within each unit so that the regressor becomes
+\verb{W_t x_\{t - time_lag\}}. The first \code{time_lag} periods per unit drop
+out, mirroring any temporally-lagged variable.
+}
+
+\examples{
+data(defense_burden)
+W_c <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
+                   row_standardize = FALSE)
+fit <- slx(ch_milex ~ milex_tm1 + log_pop_tm1 + civilwar_tm1,
+           data = defense_burden$data, W = W_c, lag = "civilwar_tm1")
+slx_effects(fit)
 }
 \references{
 Wimpy, C., Whitten, G. D., & Williams, L. K. (2021). X Marks the Spot:
 Unlocking the Treasure of Spatial-X Models. \emph{Journal of Politics},
-83(2), 722–739.
+83(2), 722-739.
 
 Vega, S. H., & Elhorst, J. P. (2015). The SLX Model.
-\emph{Journal of Regional Science}, 55(3), 339–363.
+\emph{Journal of Regional Science}, 55(3), 339-363.
 }

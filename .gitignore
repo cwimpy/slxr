@@ -9,4 +9,5 @@ inst/doc/
 /Meta/
 .DS_Store
 /replication/
+vignettes/*.html
 

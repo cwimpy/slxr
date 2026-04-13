@@ -55,3 +55,36 @@
 #' dim(defense_burden$data)
 #' dim(defense_burden$W_contig)
 "defense_burden"
+
+#' Defense burden panel, 1951-2008
+#'
+#' The full country-year panel underlying Wimpy, Whitten, and Williams
+#' (2021) Table 3, Model 3.  Includes a tibble of 7,661 country-year
+#' observations and three named lists of row-standardized sparse
+#' weights matrices, one matrix per year, encoding contiguity,
+#' alliance, and defense-pact connections.
+#'
+#' Sample excludes observations with missing covariates. Panel is
+#' unbalanced: between 63 and 187 countries per year.
+#'
+#' @format A named list:
+#' \describe{
+#'   \item{`data`}{A tibble with 7,661 rows and the same 12 columns as
+#'     [defense_burden]`$data`, but spanning 1951-2008.}
+#'   \item{`W_contig`}{Named list of 58 sparse matrices, one per year,
+#'     keyed by year as a string. Each matrix is row-standardized and
+#'     contains the countries observed in that year.}
+#'   \item{`W_alliance`}{As above, for alliance ties.}
+#'   \item{`W_defense`}{As above, for mutual defense pacts.}
+#' }
+#'
+#' @source Wimpy, Whitten, and Williams (2021) replication archive,
+#'   Journal of Politics Dataverse. \doi{10.1086/710089}
+#'
+#' @seealso [defense_burden] for the 1995 cross-section.
+#'
+#' @examples
+#' data(defense_burden_panel)
+#' names(defense_burden_panel$W_contig)[1:5]
+#' dim(defense_burden_panel$W_contig[["1990"]])
+"defense_burden_panel"
