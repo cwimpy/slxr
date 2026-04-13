@@ -84,10 +84,13 @@ slx_weights <- function(x = NULL,
     W <- W / rs
   }
 
-  lw_out <- if (style == "custom") spdep::mat2listw(as.matrix(W),
-                                                    style = "M",
-                                                    zero.policy = TRUE)
-            else lw
+  lw_out <- if (style == "custom") {
+    suppressWarnings(
+      spdep::mat2listw(as.matrix(W),
+                       style = if (row_standardize) "W" else "B",
+                       zero.policy = TRUE)
+    )
+  } else lw
 
   out <- list(
     W                = W,

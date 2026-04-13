@@ -36,7 +36,10 @@ Suggests:
     broom,
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    dplyr,
+    tidyr,
+    haven
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 URL: https://github.com/cwimpy/slxr

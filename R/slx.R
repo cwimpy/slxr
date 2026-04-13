@@ -371,7 +371,9 @@ vcov.slx <- function(object, ...) stats::vcov(object$fit)
 .looks_time_varying <- function(lst, time_values) {
   if (!is.list(lst) || is.null(names(lst)) || any(names(lst) == "")) return(FALSE)
   if (is.null(time_values)) return(FALSE)
-  setequal(names(lst), as.character(time_values))
+  # Time-varying if every time value in the data is covered by the list
+  # (extra entries for years outside the data are fine)
+  all(as.character(time_values) %in% names(lst))
 }
 
 .is_valid_provider <- function(x, time_values) {
