@@ -85,6 +85,19 @@ Early development. The MVP covers single-W SLX estimation, effects
 decomposition, and `modelsummary` integration. Multi-W, higher-order,
 temporal, and plotting features are on the roadmap.
 
+## Citation
+
+If you use `slxr` in published work, please cite both the package and
+the methodological paper it implements. Run `citation("slxr")` in R to
+see the current BibTeX entry, or refer to:
+
+- Wimpy, C., Whitten, G. D., & Williams, L. K. (2021). X Marks the Spot:
+  Unlocking the Treasure of Spatial-X Models. *Journal of Politics*,
+  83(2), 722–739. [doi:10.1086/710089](https://doi.org/10.1086/710089)
+- Wimpy, C. (2026). *slxr: Spatial-X (SLX) Models for Applied
+  Researchers.* R package version 0.1.0.
+  <https://cwimpy.github.io/slxr/>
+
 ## References
 
 Wimpy, C., Whitten, G. D., & Williams, L. K. (2021). X Marks the Spot:
