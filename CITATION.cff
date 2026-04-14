@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the package and the underlying methodological paper."
+title: "slxr: Spatial-X (SLX) Models for Applied Researchers"
+version: 0.1.0
+date-released: 2026-04-13
+authors:
+  - family-names: Wimpy
+    given-names: Cameron
+    email: cwimpy@astate.edu
+    orcid: "https://orcid.org/0000-0002-2049-5229"
+    affiliation: "Arkansas State University"
+repository-code: "https://github.com/cwimpy/slxr"
+url: "https://cwimpy.github.io/slxr/"
+license: MIT
+type: software
+keywords:
+  - spatial-econometrics
+  - spatial-x
+  - SLX
+  - spatial-regression
+  - R
+  - political-methodology
+preferred-citation:
+  type: article
+  title: "X Marks the Spot: Unlocking the Treasure of Spatial-X Models"
+  authors:
+    - family-names: Wimpy
+      given-names: Cameron
+    - family-names: Whitten
+      given-names: Guy D.
+    - family-names: Williams
+      given-names: Laron K.
+  journal: "Journal of Politics"
+  year: 2021
+  volume: 83
+  issue: 2
+  start: 722
+  end: 739
+  doi: "10.1086/710089"

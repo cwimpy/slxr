@@ -1,0 +1,30 @@
+citHeader(
+  "To cite slxr in publications, please cite both the software and the",
+  "methodological paper whose approach the package implements:"
+)
+
+bibentry(
+  bibtype  = "Manual",
+  title    = "slxr: Spatial-X (SLX) Models for Applied Researchers",
+  author   = person("Cameron", "Wimpy", email = "cwimpy@astate.edu",
+                    comment = c(ORCID = "0000-0002-2049-5229")),
+  year     = "2026",
+  note     = "R package version 0.1.0",
+  url      = "https://cwimpy.github.io/slxr/"
+)
+
+bibentry(
+  bibtype  = "Article",
+  title    = "X Marks the Spot: Unlocking the Treasure of Spatial-X Models",
+  author   = c(
+    person("Cameron", "Wimpy"),
+    person("Guy D.",  "Whitten"),
+    person("Laron K.","Williams")
+  ),
+  journal  = "Journal of Politics",
+  year     = "2021",
+  volume   = "83",
+  number   = "2",
+  pages    = "722--739",
+  doi      = "10.1086/710089"
+)
