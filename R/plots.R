@@ -16,10 +16,12 @@
 #' @return A `ggplot` object.
 #'
 #' @examples
-#' \dontrun{
-#' fit <- slx(SID74 ~ BIR74 + NWBIR74, data = nc, W = W, lag = "BIR74")
+#' data(defense_burden)
+#' W <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
+#'                  row_standardize = FALSE)
+#' fit <- slx(ch_milex ~ milex_tm1 + civilwar_tm1,
+#'            data = defense_burden$data, W = W, lag = "civilwar_tm1")
 #' slx_plot_effects(fit)
-#' }
 #' @export
 slx_plot_effects <- function(fit,
                              types = c("direct", "indirect", "total"),
@@ -174,7 +176,6 @@ slx_plot_decay <- function(fit, variables = NULL, conf.level = 0.95) {
 #' @return A `ggplot` object.
 #'
 #' @examples
-#' \dontrun{
 #' data(defense_burden)
 #' W_c <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
 #'                    row_standardize = FALSE)
@@ -182,7 +183,6 @@ slx_plot_decay <- function(fit, variables = NULL, conf.level = 0.95) {
 #'            data = defense_burden$data, W = W_c,
 #'            lag = "civilwar_tm1")
 #' slx_plot_shock(fit, variable = "civilwar_tm1", unit = 1)
-#' }
 #' @export
 slx_plot_shock <- function(fit, variable, unit,
                            magnitude = 1,

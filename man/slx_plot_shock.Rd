@@ -48,7 +48,6 @@ the result is drawn as a choropleth. Otherwise a horizontal bar of
 the largest effects is returned.
 }
 \examples{
-\dontrun{
 data(defense_burden)
 W_c <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
                    row_standardize = FALSE)
@@ -56,5 +55,4 @@ fit <- slx(ch_milex ~ milex_tm1 + civilwar_tm1,
            data = defense_burden$data, W = W_c,
            lag = "civilwar_tm1")
 slx_plot_shock(fit, variable = "civilwar_tm1", unit = 1)
-}
 }

@@ -19,14 +19,27 @@
 
 \item{...}{Unused.}
 }
+\value{
+\code{tidy.slx()} returns a \code{\link[tibble:tibble]{tibble::tibble()}} with one row per model
+coefficient (both direct and spatial-lag terms) and columns
+\code{term}, \code{estimate}, \code{std.error}, \code{statistic}, and \code{p.value}. When
+\code{conf.int = TRUE}, \code{conf.low} and \code{conf.high} columns are added.
+
+\code{glance.slx()} returns a one-row \code{\link[tibble:tibble]{tibble::tibble()}} summarizing the
+overall fit, with columns \code{r.squared}, \code{adj.r.squared}, \code{sigma},
+\code{statistic} (F statistic), \code{df}, \code{df.residual}, \code{nobs}, and
+\code{n_lag_terms} (the number of spatial-lag regressors in the model).
+}
 \description{
 These methods make \code{slx} objects compatible with the \code{broom} and
 \code{modelsummary} ecosystems.
 }
 \examples{
-\dontrun{
-fit <- slx(y ~ x1 + x2, data = df, W = W, lag = "x1")
-broom::tidy(fit)
-broom::glance(fit)
-}
+data(defense_burden)
+W <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
+                 row_standardize = FALSE)
+fit <- slx(ch_milex ~ milex_tm1 + civilwar_tm1,
+           data = defense_burden$data, W = W, lag = "civilwar_tm1")
+tidy(fit)
+glance(fit)
 }

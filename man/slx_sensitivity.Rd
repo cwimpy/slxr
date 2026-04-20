@@ -11,6 +11,12 @@ slx_sensitivity(fit, W_list)
 
 \item{W_list}{A named list of \code{slx_W} objects.}
 }
+\value{
+Not yet implemented; currently called only for its side effect of
+signalling an error. A future release will return a
+\code{\link[tibble:tibble]{tibble::tibble()}} comparing key effect estimates across
+alternative weights matrices.
+}
 \description{
 Stub - v0.2. Planned: refit an SLX model across a list of alternative
 \code{W} specifications and return a tidy comparison of key effects.

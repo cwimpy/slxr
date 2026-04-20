@@ -1,10 +1,29 @@
 # cran-comments
 
-## Submission
+## Resubmission
 
-This is a new submission. `slxr` implements Spatial-X (SLX) regression
-models following Wimpy, Whitten, and Williams (2021)
-<doi:10.1086/710089>.
+This is a resubmission of `slxr` (version 0.1.1). In response to CRAN
+feedback on the initial submission, this version makes the following
+changes:
+
+- Added `\value` sections to all exported methods. Specifically,
+  `man/slx-tidiers.Rd` now documents the tibble columns returned by
+  `tidy.slx()` and `glance.slx()`, and `man/slx_sensitivity.Rd`
+  documents that the stub is currently called only for its side
+  effect of signalling an error, with a note on the planned future
+  return value.
+- Removed all uses of `\dontrun{}` from examples. Examples that can
+  execute in under 5 seconds have been unwrapped and now run against
+  the bundled `defense_burden` dataset (in `slx-tidiers`,
+  `slx_effects`, `slx_plot_effects`, and `slx_plot_shock`). The
+  `slx_weights` example now includes a runnable custom-matrix
+  example, and the optional `sf`-based contiguity example is wrapped
+  in `\donttest{}` and guarded by `requireNamespace()`.
+
+## Original submission notes
+
+`slxr` implements Spatial-X (SLX) regression models following Wimpy,
+Whitten, and Williams (2021) <doi:10.1086/710089>.
 
 ## R CMD check results
 

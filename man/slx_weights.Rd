@@ -45,9 +45,20 @@ Returns a standardized \code{slx_W} object that carries both the sparse matrix
 and the \code{listw} form used by downstream routines.
 }
 \examples{
-\dontrun{
-library(sf)
-nc <- st_read(system.file("shape/nc.shp", package = "sf"))
-W  <- slx_weights(nc, style = "contiguity")
+# Custom weights matrix from bundled data
+data(defense_burden)
+W <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
+                 row_standardize = FALSE)
+W
+
+\donttest{
+# Contiguity weights from an sf polygon layer
+if (requireNamespace("sf", quietly = TRUE) &&
+    requireNamespace("spdep", quietly = TRUE)) {
+  nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"),
+                    quiet = TRUE)
+  W_nc <- slx_weights(nc, style = "contiguity")
+  W_nc
+}
 }
 }

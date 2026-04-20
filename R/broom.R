@@ -8,13 +8,26 @@
 #' @param conf.level Confidence level.
 #' @param ... Unused.
 #'
+#' @return
+#' `tidy.slx()` returns a [tibble::tibble()] with one row per model
+#'   coefficient (both direct and spatial-lag terms) and columns
+#'   `term`, `estimate`, `std.error`, `statistic`, and `p.value`. When
+#'   `conf.int = TRUE`, `conf.low` and `conf.high` columns are added.
+#'
+#' `glance.slx()` returns a one-row [tibble::tibble()] summarizing the
+#'   overall fit, with columns `r.squared`, `adj.r.squared`, `sigma`,
+#'   `statistic` (F statistic), `df`, `df.residual`, `nobs`, and
+#'   `n_lag_terms` (the number of spatial-lag regressors in the model).
+#'
 #' @name slx-tidiers
 #' @examples
-#' \dontrun{
-#' fit <- slx(y ~ x1 + x2, data = df, W = W, lag = "x1")
-#' broom::tidy(fit)
-#' broom::glance(fit)
-#' }
+#' data(defense_burden)
+#' W <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
+#'                  row_standardize = FALSE)
+#' fit <- slx(ch_milex ~ milex_tm1 + civilwar_tm1,
+#'            data = defense_burden$data, W = W, lag = "civilwar_tm1")
+#' tidy(fit)
+#' glance(fit)
 NULL
 
 #' @rdname slx-tidiers

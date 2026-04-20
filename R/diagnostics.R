@@ -114,6 +114,13 @@ slx_compare <- function(..., W = NULL) {
 #'
 #' @param fit An `slx` model.
 #' @param W_list A named list of `slx_W` objects.
+#'
+#' @return
+#' Not yet implemented; currently called only for its side effect of
+#' signalling an error. A future release will return a
+#' [tibble::tibble()] comparing key effect estimates across
+#' alternative weights matrices.
+#'
 #' @export
 #' @keywords internal
 slx_sensitivity <- function(fit, W_list) {

@@ -1,3 +1,20 @@
+# slxr 0.1.1
+
+CRAN resubmission addressing feedback from the initial submission.
+
+- Added `\value` sections to `slx-tidiers.Rd` (documenting the tibble
+  columns returned by `tidy.slx()` and `glance.slx()`) and
+  `slx_sensitivity.Rd` (documenting that the stub is called for its
+  side effect of signalling an error, with a note on the planned
+  future return value).
+- Removed all `\dontrun{}` blocks from examples. Examples in
+  `slx-tidiers`, `slx_effects`, `slx_plot_effects`, and
+  `slx_plot_shock` are now unwrapped and run against the bundled
+  `defense_burden` dataset. The `slx_weights` example now runs a
+  custom-matrix case by default; the optional `sf`-based contiguity
+  example is wrapped in `\donttest{}` and guarded by
+  `requireNamespace()`.
+
 # slxr 0.1.0
 
 Initial CRAN release.
