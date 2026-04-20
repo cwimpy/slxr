@@ -37,16 +37,20 @@ Whitten, and Williams (2021) <doi:10.1086/710089>.
 
 ## Test environments
 
-- local macOS 15.4, R 4.5.0
+- local macOS 15.4, R 4.5.3
 - GitHub Actions:
   - macOS-latest,   R release
   - windows-latest, R release
   - ubuntu-latest,  R devel, R release, R oldrel-1
 - win-builder (devel)
+- R-hub v2:
+  - linux       (Debian, GCC)
+  - clang-asan  (clang address sanitizer)
+  - atlas       (Fedora, ATLAS BLAS)
+  - m1-san      (Apple silicon sanitizer)
 
-All environments return 0 errors and 0 warnings. The single NOTE on
-win-builder is the new-submission/spell-check message documented
-above.
+All environments return 0 errors and 0 warnings. The only NOTEs are
+the new-submission/spell-check message documented above.
 
 ## Downstream dependencies
 
