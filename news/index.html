@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slxr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,12 @@
       <small>Source: <a href="https://github.com/cwimpy/slxr/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.1" id="slxr-011">slxr 0.1.1<a class="anchor" aria-label="anchor" href="#slxr-011"></a></h2>
+<p>CRAN resubmission addressing feedback from the initial submission.</p>
+<ul><li>Added <code>\value</code> sections to <code>slx-tidiers.Rd</code> (documenting the tibble columns returned by <code><a href="../reference/slx-tidiers.html">tidy.slx()</a></code> and <code><a href="../reference/slx-tidiers.html">glance.slx()</a></code>) and <code>slx_sensitivity.Rd</code> (documenting that the stub is called for its side effect of signalling an error, with a note on the planned future return value).</li>
+<li>Removed all <code>\dontrun{}</code> blocks from examples. Examples in <code>slx-tidiers</code>, <code>slx_effects</code>, <code>slx_plot_effects</code>, and <code>slx_plot_shock</code> are now unwrapped and run against the bundled <code>defense_burden</code> dataset. The <code>slx_weights</code> example now runs a custom-matrix case by default; the optional <code>sf</code>-based contiguity example is wrapped in <code>\donttest{}</code> and guarded by <code><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace()</a></code>.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="slxr-010">slxr 0.1.0<a class="anchor" aria-label="anchor" href="#slxr-010"></a></h2>
 <p>Initial CRAN release.</p>

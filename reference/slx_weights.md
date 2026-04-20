@@ -61,9 +61,22 @@ An object of class `slx_W` with elements `W` (sparse matrix), `listw`
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-library(sf)
-nc <- st_read(system.file("shape/nc.shp", package = "sf"))
-W  <- slx_weights(nc, style = "contiguity")
-} # }
+# Custom weights matrix from bundled data
+data(defense_burden)
+W <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
+                 row_standardize = FALSE)
+W
+#> <slx_W>  n = 179   style = custom   row-standardized = FALSE 
+
+# \donttest{
+# Contiguity weights from an sf polygon layer
+if (requireNamespace("sf", quietly = TRUE) &&
+    requireNamespace("spdep", quietly = TRUE)) {
+  nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"),
+                    quiet = TRUE)
+  W_nc <- slx_weights(nc, style = "contiguity")
+  W_nc
+}
+#> <slx_W>  n = 100   style = contiguity   row-standardized = TRUE 
+# }
 ```

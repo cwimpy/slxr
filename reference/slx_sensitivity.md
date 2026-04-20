@@ -18,3 +18,10 @@ slx_sensitivity(fit, W_list)
 - W_list:
 
   A named list of `slx_W` objects.
+
+## Value
+
+Not yet implemented; currently called only for its side effect of
+signalling an error. A future release will return a
+[`tibble::tibble()`](https://tibble.tidyverse.org/reference/tibble.html)
+comparing key effect estimates across alternative weights matrices.

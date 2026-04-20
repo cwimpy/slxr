@@ -9,7 +9,7 @@ modelsummary ecosystems."><meta property="og:image" content="https://cwimpy.gith
 
     <a class="navbar-brand me-2" href="../index.html">slxr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,14 +71,38 @@ modelsummary ecosystems."><meta property="og:image" content="https://cwimpy.gith
 <dd><p>Unused.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p><code>tidy.slx()</code> returns a <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble()</a></code> with one row per model
+coefficient (both direct and spatial-lag terms) and columns
+<code>term</code>, <code>estimate</code>, <code>std.error</code>, <code>statistic</code>, and <code>p.value</code>. When
+<code>conf.int = TRUE</code>, <code>conf.low</code> and <code>conf.high</code> columns are added.</p>
+<p><code>glance.slx()</code> returns a one-row <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble()</a></code> summarizing the
+overall fit, with columns <code>r.squared</code>, <code>adj.r.squared</code>, <code>sigma</code>,
+<code>statistic</code> (F statistic), <code>df</code>, <code>df.residual</code>, <code>nobs</code>, and
+<code>n_lag_terms</code> (the number of spatial-lag regressors in the model).</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="slx.html">slx</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span>, data <span class="op">=</span> <span class="va">df</span>, W <span class="op">=</span> <span class="va">W</span>, lag <span class="op">=</span> <span class="st">"x1"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/glance.html" class="external-link">glance</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">defense_burden</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">W</span> <span class="op">&lt;-</span> <span class="fu"><a href="slx_weights.html">slx_weights</a></span><span class="op">(</span>style <span class="op">=</span> <span class="st">"custom"</span>, matrix <span class="op">=</span> <span class="va">defense_burden</span><span class="op">$</span><span class="va">W_contig</span>,</span></span>
+<span class="r-in"><span>                 row_standardize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="slx.html">slx</a></span><span class="op">(</span><span class="va">ch_milex</span> <span class="op">~</span> <span class="va">milex_tm1</span> <span class="op">+</span> <span class="va">civilwar_tm1</span>,</span></span>
+<span class="r-in"><span>           data <span class="op">=</span> <span class="va">defense_burden</span><span class="op">$</span><span class="va">data</span>, W <span class="op">=</span> <span class="va">W</span>, lag <span class="op">=</span> <span class="st">"civilwar_tm1"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   term           estimate std.error statistic  p.value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> (Intercept)       0.460    0.136      3.38  9.08<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> milex_tm1        -<span style="color: #BB0000;">0.238</span>    0.023<span style="text-decoration: underline;">3</span>   -<span style="color: #BB0000;">10.2</span>   1.71<span style="color: #949494;">e</span><span style="color: #BB0000;">-19</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> civilwar_tm1     -<span style="color: #BB0000;">1.18</span>     0.571     -<span style="color: #BB0000;">2.06</span>  4.09<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> W.civilwar_tm1    0.171    0.836      0.204 8.39<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://generics.r-lib.org/reference/glance.html" class="external-link">glance</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   r.squared adj.r.squared sigma statistic    df df.residual  nobs n_lag_terms</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     0.404         0.394  1.46      39.6     3         175   179           1</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

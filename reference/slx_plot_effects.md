@@ -50,8 +50,10 @@ A `ggplot` object.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-fit <- slx(SID74 ~ BIR74 + NWBIR74, data = nc, W = W, lag = "BIR74")
+data(defense_burden)
+W <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
+                 row_standardize = FALSE)
+fit <- slx(ch_milex ~ milex_tm1 + civilwar_tm1,
+           data = defense_burden$data, W = W, lag = "civilwar_tm1")
 slx_plot_effects(fit)
-} # }
 ```

@@ -11,7 +11,7 @@ and the listw form used by downstream routines."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">slxr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,11 +104,24 @@ set to <code>FALSE</code> when connection count should itself carry weight.</p><
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"shape/nc.shp"</span>, package <span class="op">=</span> <span class="st">"sf"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">W</span>  <span class="op">&lt;-</span> <span class="fu">slx_weights</span><span class="op">(</span><span class="va">nc</span>, style <span class="op">=</span> <span class="st">"contiguity"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Custom weights matrix from bundled data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">defense_burden</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">W</span> <span class="op">&lt;-</span> <span class="fu">slx_weights</span><span class="op">(</span>style <span class="op">=</span> <span class="st">"custom"</span>, matrix <span class="op">=</span> <span class="va">defense_burden</span><span class="op">$</span><span class="va">W_contig</span>,</span></span>
+<span class="r-in"><span>                 row_standardize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">W</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;slx_W&gt;  n = 179   style = custom   row-standardized = FALSE </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Contiguity weights from an sf polygon layer</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"sf"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"spdep"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"shape/nc.shp"</span>, package <span class="op">=</span> <span class="st">"sf"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                    quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">W_nc</span> <span class="op">&lt;-</span> <span class="fu">slx_weights</span><span class="op">(</span><span class="va">nc</span>, style <span class="op">=</span> <span class="st">"contiguity"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">W_nc</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;slx_W&gt;  n = 100   style = contiguity   row-standardized = TRUE </span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

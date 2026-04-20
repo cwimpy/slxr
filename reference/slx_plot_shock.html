@@ -13,7 +13,7 @@ target unit."><meta property="og:image" content="https://cwimpy.github.io/slxr/l
 
     <a class="navbar-brand me-2" href="../index.html">slxr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,15 +107,14 @@ the largest effects is returned.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">defense_burden</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">defense_burden</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">W_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="slx_weights.html">slx_weights</a></span><span class="op">(</span>style <span class="op">=</span> <span class="st">"custom"</span>, matrix <span class="op">=</span> <span class="va">defense_burden</span><span class="op">$</span><span class="va">W_contig</span>,</span></span>
 <span class="r-in"><span>                   row_standardize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="slx.html">slx</a></span><span class="op">(</span><span class="va">ch_milex</span> <span class="op">~</span> <span class="va">milex_tm1</span> <span class="op">+</span> <span class="va">civilwar_tm1</span>,</span></span>
 <span class="r-in"><span>           data <span class="op">=</span> <span class="va">defense_burden</span><span class="op">$</span><span class="va">data</span>, W <span class="op">=</span> <span class="va">W_c</span>,</span></span>
 <span class="r-in"><span>           lag <span class="op">=</span> <span class="st">"civilwar_tm1"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">slx_plot_shock</span><span class="op">(</span><span class="va">fit</span>, variable <span class="op">=</span> <span class="st">"civilwar_tm1"</span>, unit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-plt img"><img src="slx_plot_shock-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -39,8 +39,16 @@ A tibble with columns `variable`, `w_name`, `order` (when
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-fit <- slx(y ~ x1 + x2, data = df, W = W, lag = "x1")
+data(defense_burden)
+W <- slx_weights(style = "custom", matrix = defense_burden$W_contig,
+                 row_standardize = FALSE)
+fit <- slx(ch_milex ~ milex_tm1 + civilwar_tm1,
+           data = defense_burden$data, W = W, lag = "civilwar_tm1")
 slx_effects(fit)
-} # }
+#> # A tibble: 3 × 8
+#>   variable     w_name type     estimate std.error conf.low conf.high p.value
+#>   <chr>        <chr>  <chr>       <dbl>     <dbl>    <dbl>     <dbl>   <dbl>
+#> 1 civilwar_tm1 NA     direct     -1.18      0.571    -2.30   -0.0495  0.0409
+#> 2 civilwar_tm1 W      indirect    0.171     0.836    -1.48    1.82    0.839 
+#> 3 civilwar_tm1 W      total      -1.01      1.01     -3.00    0.988   0.321 
 ```
