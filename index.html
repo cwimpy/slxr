@@ -75,15 +75,18 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
+<p>Install the released version from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Development version</span></span>
-<span><span class="co"># install.packages("remotes")</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"slxr"</span><span class="op">)</span></span></code></pre></div>
+<p>Or the development version from GitHub:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"cwimpy/slxr"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cwimpy/slxr" class="external-link">slxr</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">defense_burden</span><span class="op">)</span>   <span class="co"># 1995 cross-section from Wimpy et al. (2021)</span></span>
 <span></span>
@@ -111,7 +114,7 @@
 <img src="reference/figures/README-effects.png" alt="SLX effects plot"><div class="figcaption">SLX effects plot</div>
 </div>
 <p>Variable-specific weights matrices:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/slx.html">slx</a></span><span class="op">(</span><span class="va">defense</span> <span class="op">~</span> <span class="va">civil_war</span> <span class="op">+</span> <span class="va">interstate_war</span> <span class="op">+</span> <span class="va">defense_lag</span>,</span>
 <span>           data <span class="op">=</span> <span class="va">df</span>,</span>
 <span>           spatial <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -123,30 +126,29 @@
 <div class="section level2">
 <h2 id="status">Status<a class="anchor" aria-label="anchor" href="#status"></a>
 </h2>
-<p>Early development. The MVP covers single-W SLX estimation, effects decomposition, and <code>modelsummary</code> integration. Multi-W, higher-order, temporal, and plotting features are on the roadmap.</p>
+<p>Available on CRAN. The current release covers SLX estimation with variable-specific and higher-order weights matrices, temporally-lagged spatial variables, tidy effects decomposition, <code>modelsummary</code> integration, and a <code><a href="reference/slx_plot_effects.html">slx_plot_effects()</a></code> visualization helper. Additional diagnostics, vignettes, and panel-data workflows are on the roadmap — issues and pull requests welcome at <a href="https://github.com/cwimpy/slxr" class="external-link">github.com/cwimpy/slxr</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>If you use <code>slxr</code> in published work, please cite both the package and the methodological paper it implements. Run <code>citation("slxr")</code> in R to see the current BibTeX entry, or refer to:</p>
 <ul>
-<li>Wimpy, C., Whitten, G. D., &amp; Williams, L. K. (2021). X Marks the Spot: Unlocking the Treasure of Spatial-X Models. <em>Journal of Politics</em>, 83(2), 722–739. <a href="https://doi.org/10.1086/710089" class="external-link">doi:10.1086/710089</a>
-</li>
-<li>Wimpy, C. (2026). <em>slxr: Spatial-X (SLX) Models for Applied Researchers.</em> R package version 0.1.0. <a href="https://cwimpy.github.io/slxr/" class="uri">https://cwimpy.github.io/slxr/</a>
-</li>
+<li>Wimpy, Cameron, Guy D. Whitten, and Laron K. Williams. 2021. “X Marks the Spot: Unlocking the Treasure of Spatial-X Models.” <em>Journal of Politics</em> 83(2): 722–739. <a href="https://doi.org/10.1086/710089" class="external-link">doi:10.1086/710089</a>.</li>
+<li>Wimpy, Cameron. 2026. “slxr: Spatial-X (SLX) Models for Applied Researchers.” R package version 0.1.1. <a href="https://doi.org/10.5281/zenodo.19697570" class="external-link">doi:10.5281/zenodo.19697570</a>. <a href="https://cran.r-project.org/package=slxr" class="external-link uri">https://cran.r-project.org/package=slxr</a>.</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>Wimpy, C., Whitten, G. D., &amp; Williams, L. K. (2021). X Marks the Spot: Unlocking the Treasure of Spatial-X Models. <em>Journal of Politics</em>, 83(2), 722–739. <a href="https://doi.org/10.1086/710089" class="external-link">doi:10.1086/710089</a></p>
-<p>Vega, S. H., &amp; Elhorst, J. P. (2015). The SLX Model. <em>Journal of Regional Science</em>, 55(3), 339–363.</p>
-<p>LeSage, J. P., &amp; Pace, R. K. (2009). <em>Introduction to Spatial Econometrics</em>. Chapman &amp; Hall/CRC.</p>
+<p>Wimpy, Cameron, Guy D. Whitten, and Laron K. Williams. 2021. “X Marks the Spot: Unlocking the Treasure of Spatial-X Models.” <em>Journal of Politics</em> 83(2): 722–739. <a href="https://doi.org/10.1086/710089" class="external-link">doi:10.1086/710089</a>.</p>
+<p>Vega, Solmaria Halleck, and J. Paul Elhorst. 2015. “The SLX Model.” <em>Journal of Regional Science</em> 55(3): 339–363.</p>
+<p>LeSage, James P., and Robert Kelley Pace. 2009. <em>Introduction to Spatial Econometrics</em>. Boca Raton, FL: Chapman &amp; Hall/CRC.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=slxr" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/cwimpy/slxr/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/cwimpy/slxr/issues" class="external-link">Report a bug</a></li>
 </ul>
@@ -178,9 +180,12 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
+<li><a href="https://cran.r-project.org/package=slxr" class="external-link"><img src="https://www.r-pkg.org/badges/version/slxr" alt="CRAN status"></a></li>
+<li><a href="https://cran.r-project.org/package=slxr" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/slxr" alt="CRAN downloads"></a></li>
 <li><a href="https://github.com/cwimpy/slxr/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/cwimpy/slxr/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://github.com/cwimpy/slxr/actions/workflows/pkgdown.yaml" class="external-link"><img src="https://github.com/cwimpy/slxr/actions/workflows/pkgdown.yaml/badge.svg" alt="pkgdown"></a></li>
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
+<li><a href="https://doi.org/10.5281/zenodo.19697570" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.19697570.svg" alt="DOI"></a></li>
 </ul>
 </div>
 

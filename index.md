@@ -29,8 +29,15 @@ first-class support for the features applied researchers actually need:
 
 ## Installation
 
+Install the released version from CRAN:
+
 ``` r
-# Development version
+install.packages("slxr")
+```
+
+Or the development version from GitHub:
+
+``` r
 # install.packages("remotes")
 remotes::install_github("cwimpy/slxr")
 ```
@@ -81,9 +88,14 @@ fit <- slx(defense ~ civil_war + interstate_war + defense_lag,
 
 ## Status
 
-Early development. The MVP covers single-W SLX estimation, effects
-decomposition, and `modelsummary` integration. Multi-W, higher-order,
-temporal, and plotting features are on the roadmap.
+Available on CRAN. The current release covers SLX estimation with
+variable-specific and higher-order weights matrices, temporally-lagged
+spatial variables, tidy effects decomposition, `modelsummary`
+integration, and a
+[`slx_plot_effects()`](https://cwimpy.github.io/slxr/reference/slx_plot_effects.md)
+visualization helper. Additional diagnostics, vignettes, and panel-data
+workflows are on the roadmap — issues and pull requests welcome at
+[github.com/cwimpy/slxr](https://github.com/cwimpy/slxr).
 
 ## Citation
 
@@ -91,21 +103,24 @@ If you use `slxr` in published work, please cite both the package and
 the methodological paper it implements. Run `citation("slxr")` in R to
 see the current BibTeX entry, or refer to:
 
-- Wimpy, C., Whitten, G. D., & Williams, L. K. (2021). X Marks the Spot:
-  Unlocking the Treasure of Spatial-X Models. *Journal of Politics*,
-  83(2), 722–739. [doi:10.1086/710089](https://doi.org/10.1086/710089)
-- Wimpy, C. (2026). *slxr: Spatial-X (SLX) Models for Applied
-  Researchers.* R package version 0.1.0.
-  <https://cwimpy.github.io/slxr/>
+- Wimpy, Cameron, Guy D. Whitten, and Laron K. Williams. 2021. “X Marks
+  the Spot: Unlocking the Treasure of Spatial-X Models.” *Journal of
+  Politics* 83(2): 722–739.
+  [doi:10.1086/710089](https://doi.org/10.1086/710089).
+- Wimpy, Cameron. 2026. “slxr: Spatial-X (SLX) Models for Applied
+  Researchers.” R package version 0.1.1.
+  [doi:10.5281/zenodo.19697570](https://doi.org/10.5281/zenodo.19697570).
+  <https://cran.r-project.org/package=slxr>.
 
 ## References
 
-Wimpy, C., Whitten, G. D., & Williams, L. K. (2021). X Marks the Spot:
-Unlocking the Treasure of Spatial-X Models. *Journal of Politics*,
-83(2), 722–739. [doi:10.1086/710089](https://doi.org/10.1086/710089)
+Wimpy, Cameron, Guy D. Whitten, and Laron K. Williams. 2021. “X Marks
+the Spot: Unlocking the Treasure of Spatial-X Models.” *Journal of
+Politics* 83(2): 722–739.
+[doi:10.1086/710089](https://doi.org/10.1086/710089).
 
-Vega, S. H., & Elhorst, J. P. (2015). The SLX Model. *Journal of
-Regional Science*, 55(3), 339–363.
+Vega, Solmaria Halleck, and J. Paul Elhorst. 2015. “The SLX Model.”
+*Journal of Regional Science* 55(3): 339–363.
 
-LeSage, J. P., & Pace, R. K. (2009). *Introduction to Spatial
-Econometrics*. Chapman & Hall/CRC.
+LeSage, James P., and Robert Kelley Pace. 2009. *Introduction to Spatial
+Econometrics*. Boca Raton, FL: Chapman & Hall/CRC.

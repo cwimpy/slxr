@@ -2,6 +2,8 @@
 
 ## slxr 0.1.1
 
+CRAN release: 2026-04-22
+
 CRAN resubmission addressing feedback from the initial submission.
 
 - Added `\value` sections to `slx-tidiers.Rd` (documenting the tibble
