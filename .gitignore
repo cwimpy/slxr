@@ -12,3 +12,7 @@ inst/doc/
 vignettes/*.html
 
 docs
+
+# R CMD build / check artifacts
+*.Rcheck/
+*.tar.gz
