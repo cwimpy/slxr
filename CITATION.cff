@@ -1,8 +1,9 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite both the package and the underlying methodological paper."
 title: "slxr: Spatial-X (SLX) Models for Applied Researchers"
-version: 0.1.0
-date-released: 2026-04-13
+version: 0.1.1
+date-released: 2026-04-22
+doi: 10.5281/zenodo.19697570
 authors:
   - family-names: Wimpy
     given-names: Cameron
@@ -10,9 +11,13 @@ authors:
     orcid: "https://orcid.org/0000-0002-2049-5229"
     affiliation: "Arkansas State University"
 repository-code: "https://github.com/cwimpy/slxr"
-url: "https://cwimpy.github.io/slxr/"
+url: "https://cran.r-project.org/package=slxr"
 license: MIT
 type: software
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.19697570
+    description: "Zenodo archive of slxr v0.1.1"
 keywords:
   - spatial-econometrics
   - spatial-x

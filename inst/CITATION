@@ -4,27 +4,41 @@ citHeader(
 )
 
 bibentry(
-  bibtype  = "Manual",
-  title    = "slxr: Spatial-X (SLX) Models for Applied Researchers",
-  author   = person("Cameron", "Wimpy", email = "cwimpy@astate.edu",
-                    comment = c(ORCID = "0000-0002-2049-5229")),
-  year     = "2026",
-  note     = "R package version 0.1.0",
-  url      = "https://cwimpy.github.io/slxr/"
+  bibtype     = "Manual",
+  title       = "slxr: Spatial-X (SLX) Models for Applied Researchers",
+  author      = person("Cameron", "Wimpy", email = "cwimpy@astate.edu",
+                       comment = c(ORCID = "0000-0002-2049-5229")),
+  year        = "2026",
+  note        = "R package version 0.1.1",
+  doi         = "10.5281/zenodo.19697570",
+  url         = "https://cran.r-project.org/package=slxr",
+  textVersion = paste(
+    "Wimpy, Cameron. 2026.",
+    "\"slxr: Spatial-X (SLX) Models for Applied Researchers.\"",
+    "R package version 0.1.1.",
+    "doi:10.5281/zenodo.19697570.",
+    "https://cran.r-project.org/package=slxr."
+  )
 )
 
 bibentry(
-  bibtype  = "Article",
-  title    = "X Marks the Spot: Unlocking the Treasure of Spatial-X Models",
-  author   = c(
+  bibtype     = "Article",
+  title       = "X Marks the Spot: Unlocking the Treasure of Spatial-X Models",
+  author      = c(
     person("Cameron", "Wimpy"),
     person("Guy D.",  "Whitten"),
     person("Laron K.","Williams")
   ),
-  journal  = "Journal of Politics",
-  year     = "2021",
-  volume   = "83",
-  number   = "2",
-  pages    = "722--739",
-  doi      = "10.1086/710089"
+  journal     = "Journal of Politics",
+  year        = "2021",
+  volume      = "83",
+  number      = "2",
+  pages       = "722--739",
+  doi         = "10.1086/710089",
+  textVersion = paste(
+    "Wimpy, Cameron, Guy D. Whitten, and Laron K. Williams. 2021.",
+    "\"X Marks the Spot: Unlocking the Treasure of Spatial-X Models.\"",
+    "Journal of Politics 83(2): 722-739.",
+    "doi:10.1086/710089."
+  )
 )
