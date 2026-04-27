@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Rscript -e 'roxygen2::roxygenise\\(\\)')",
+      "Bash(git -C /Users/cwimpy/Documents/GitHub/slxr/ status)",
+      "Bash(git -C /Users/cwimpy/Documents/GitHub/slxr/ diff --stat)",
+      "Bash(git -C /Users/cwimpy/Documents/GitHub/slxr/ log --oneline -5)",
+      "Bash(git add *)",
+      "Bash(git -C /Users/cwimpy/Documents/GitHub/slxr/ commit -m ' *)",
+      "Bash(git -C /Users/cwimpy/Documents/GitHub/slxr/ push)",
+      "Bash(Rscript *)",
+      "Bash(git -C /Users/cwimpy/Documents/GitHub/slxr/ add cran-comments.md)",
+      "Bash(git -C /Users/cwimpy/documents/github/cwimpy-website/ status --short)",
+      "Bash(git -C /Users/cwimpy/documents/github/cwimpy-website/ diff --stat)",
+      "Bash(git -C /Users/cwimpy/documents/github/cwimpy-website/ add software.qmd)",
+      "Bash(git -C /Users/cwimpy/documents/github/cwimpy-website/ commit -m ' *)",
+      "Bash(git -C /Users/cwimpy/documents/github/cwimpy-website/ push)",
+      "Bash(R --version)",
+      "Bash(rm -f slxr_*.tar.gz)",
+      "Bash(rm -rf slxr.Rcheck)",
+      "Bash(R CMD build .)",
+      "Bash(setopt NULL_GLOB)",
+      "Bash(R CMD check --as-cran slxr_0.1.1.tar.gz)",
+      "Bash(grep -v \"OK$\")",
+      "Bash(awk '/^\\\\* checking CRAN incoming feasibility/,/^\\\\* checking/' ~/Documents/GitHub/slxr/slxr.Rcheck/00check.log)",
+      "Bash(rm -rf slxr.Rcheck slxr_0.1.1.tar.gz)",
+      "Bash(ls -d *.Rcheck *.tar.gz)"
+    ]
+  }
+}
